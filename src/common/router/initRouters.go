@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter(router *gin.Engine) {
-	//router := gin.Default()
+func InitRouter() *gin.Engine {
+	router := gin.Default()
 	router.Use(gin.Recovery())
 	store := cookie.NewStore([]byte("secret"))
 	store.Options(sessions.Options{
@@ -59,5 +59,5 @@ func InitRouter(router *gin.Engine) {
 		r5.POST("/tagDel", tag.PostTagDel)
 		r5.POST("/TagCname", tag.PostTagCname)
 	}
-
+	return router
 }

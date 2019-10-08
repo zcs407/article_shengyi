@@ -1,9 +1,9 @@
 package user
 
 import (
+	"articlebk/src/common/dbtable"
+	"articlebk/src/common/sql"
 	"articlebk/src/utils"
-	"articlebk/src/utils/dbtable"
-	"articlebk/src/utils/sql"
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/gin-gonic/gin"

@@ -1,7 +1,7 @@
 package user
 
 import (
-	"articlebk/src/utils/sql"
+	"articlebk/src/common/sql"
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/gin-contrib/sessions"

@@ -1,0 +1,16 @@
+[logging]
+level = "debug"
+format = "json"
+path = "/Users/ander/go/src/articlebk/log/article.log"
+[database]
+address = "127.0.0.1:3316"
+user_name = "ander"
+password = "Ander110!!"
+db_name = "articledb"
+max_idle_conns = 10
+max_open_conns = 20
+[file_server]
+address = "0.0.0.0:8800"
+[api_server]
+address = "0.0.0.0:8080"
+

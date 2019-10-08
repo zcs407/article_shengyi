@@ -2,15 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/conf/config.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/constant.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/log.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/getArticlelistBySpecial.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getArticlelistBySpecial.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/getFailedArticle.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getFailedArticle.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/getReleasedArticleList.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getReleasedArticleList.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/getWillBeReleaseArticleList.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getWillBeReleaseArticleList.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/patchArticleEdit.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/patchArticleEdit.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/putArticleRelease.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/putArticleRelease.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getArticlesByTag.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getArticlesByTag.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/image/postArticleImageAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/image/postArticleImageAdd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/postArticleDel.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/postArticleDel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/initinfo/dbInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/router/initRouters.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/router/initRouters.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/sql/gormSQL.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,9 +37,11 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/log/app.log&#10;/Users/ander/go/src/articlebk/log/article.log" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
@@ -46,11 +51,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/common" />
       <recent name="$PROJECT_DIR$/src/utils/router" />
       <recent name="$PROJECT_DIR$/src/utils/initinfo" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/src/utils" />
-      <recent name="$PROJECT_DIR$/src/api" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/utils/init" />
@@ -110,5 +115,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

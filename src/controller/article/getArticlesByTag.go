@@ -1,8 +1,9 @@
 package article
 
 import (
-	"articlebk/src/utils/dbtable"
-	"articlebk/src/utils/sql"
+	. "articlebk/src/common"
+	"articlebk/src/common/dbtable"
+	"articlebk/src/common/sql"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -38,7 +39,7 @@ func GetArtileListByTag(ctx *gin.Context) {
 		resp.Articles = nil
 		resp.Code = "403"
 		resp.Info = "tag_id不可为空"
-		loger.WARING.Println("article_select_by_tag_err", resp)
+		Log.Error("article_select_by_tag_err", resp)
 		ctx.JSON(200, resp)
 		return
 	}
@@ -48,7 +49,7 @@ func GetArtileListByTag(ctx *gin.Context) {
 		resp.Articles = nil
 		resp.Code = "501"
 		resp.Info = "该标签不存在"
-		loger.WARING.Println("[article_select_by_tag_err]", resp)
+		Log.Warn("[article_select_by_tag_err]", resp)
 		ctx.JSON(200, resp)
 		return
 	}
@@ -59,7 +60,7 @@ func GetArtileListByTag(ctx *gin.Context) {
 		resp.Articles = nil
 		resp.Code = "500"
 		resp.Info = "数据库无法查询该标题的文章"
-		loger.ERROR.Println("[article_select_by_tag_err]", resp, err)
+		Log.Error("[article_select_by_tag_err]", resp, err)
 		ctx.JSON(200, resp)
 		return
 	}
@@ -67,6 +68,6 @@ func GetArtileListByTag(ctx *gin.Context) {
 	resp.Articles = articles
 	resp.Code = "200"
 	resp.Info = "查询文章成功"
-	loger.INFO.Println("article_select_by_tag_info", resp)
+	Log.Info("article_select_by_tag_info", resp)
 	ctx.JSON(200, resp)
 }

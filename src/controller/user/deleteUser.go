@@ -1,7 +1,7 @@
 package user
 
 import (
-	"articlebk/src/utils/sql"
+	"articlebk/src/common/sql"
 	"github.com/gin-gonic/gin"
 	"log"
 )

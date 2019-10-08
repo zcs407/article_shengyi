@@ -1,8 +1,8 @@
 package column
 
 import (
-	"articlebk/src/utils/dbtable"
-	"articlebk/src/utils/sql"
+	"articlebk/src/common/dbtable"
+	"articlebk/src/common/sql"
 	"github.com/gin-gonic/gin"
 
 	"log"
