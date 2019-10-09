@@ -1,4 +1,4 @@
-package column
+package controller
 
 import (
 	. "articlebk/src/common"

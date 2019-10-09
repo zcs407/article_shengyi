@@ -1,4 +1,4 @@
-package image
+package controller
 
 import (
 	. "articlebk/src/common"

@@ -1,11 +1,7 @@
 package router
 
 import (
-	"articlebk/src/controller/article"
-	"articlebk/src/controller/article/image"
-	"articlebk/src/controller/column"
-	"articlebk/src/controller/tag"
-	"articlebk/src/controller/user"
+	"articlebk/src/controller"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -21,43 +17,43 @@ func InitRouter() *gin.Engine {
 	router.Use(sessions.Sessions("name", store))
 	r1 := router.Group("/")
 	{
-		r1.POST("/login", user.PostLogin)
-		r1.POST("/register", user.PostRegister)
+		r1.POST("/login", controller.PostLogin)
+		r1.POST("/register", controller.PostRegister)
 	}
 	r2 := router.Group("/user")
 	{
-		r2.DELETE("/userDelete", user.DeleteUser)
-		r2.PUT("/userUpdate/userPwdUpdate", user.PutUserPwdUpdate)
-		r2.PUT("/userUpdate/userRollerUpdate", user.PutUserRollerUpdate)
-		r2.GET("/userList", user.GetUserList)
+		r2.DELETE("/userDelete", controller.DeleteUser)
+		r2.PUT("/userUpdate/userPwdUpdate", controller.PutUserPwdUpdate)
+		r2.PUT("/userUpdate/userRollerUpdate", controller.PutUserRollerUpdate)
+		r2.GET("/userList", controller.GetUserList)
 
 	}
 	r3 := router.Group("/article")
 	{
-		r3.POST("/articleImageAdd", image.PostArticleImageAdd)
-		r3.POST("/articleAdd", article.PostArticleAdd)
-		r3.PATCH("/articleEdit", article.PatchArticleEdit)
-		r3.PUT("/articleSubmit", article.PutArticleSubmit)
-		r3.PUT("/articleRelease", article.PutArticleRelease)
-		r3.DELETE("/articleDelete", article.DeleteArticleDel)
-		r3.GET("/articleListByColumn", article.GetArticleListByColumn)
-		r3.GET("/articleListByTag", article.GetArticleListByTag)
-		r3.GET("/getFailedArticleList", article.GetFailedArticleList)
-		r3.GET("/getWillBeReleaseArticleList", article.GetWillBeReleaseArticleList)
-		r3.GET("/getReleasedArticleList", article.GetReleasedArticleList)
+		r3.POST("/articleImageAdd", controller.PostArticleImageAdd)
+		r3.POST("/articleAdd", controller.PostArticleAdd)
+		r3.PATCH("/articleEdit", controller.PatchArticleEdit)
+		r3.PUT("/articleSubmit", controller.PutArticleSubmit)
+		r3.PUT("/articleRelease", controller.PutArticleRelease)
+		r3.DELETE("/articleDelete", controller.DeleteArticleDel)
+		r3.GET("/articleListByColumn", controller.GetArticleListByColumn)
+		r3.GET("/articleListByTag", controller.GetArticleListByTag)
+		r3.GET("/getFailedArticleList", controller.GetFailedArticleList)
+		r3.GET("/getWillBeReleaseArticleList", controller.GetWillBeReleaseArticleList)
+		r3.GET("/getReleasedArticleList", controller.GetReleasedArticleList)
 	}
 	r4 := router.Group("/column")
 	{
-		r4.POST("/columnAdd", column.PostColumnAdd)
-		r4.PUT("/columnCname", column.PutColumnCname)
-		r4.DELETE("/columnDel", column.DeleteColumn)
-		r4.GET("/columnList", column.GetColumnList)
+		r4.POST("/columnAdd", controller.PostColumnAdd)
+		r4.PUT("/columnCname", controller.PutColumnCname)
+		r4.DELETE("/columnDel", controller.DeleteColumn)
+		r4.GET("/columnList", controller.GetColumnList)
 	}
 	r5 := router.Group("/tag")
 	{
-		r5.POST("/tagAdd", tag.PostTagAdd)
-		r5.POST("/tagDel", tag.PostTagDel)
-		r5.POST("/TagCname", tag.PostTagCname)
+		r5.POST("/tagAdd", controller.PostTagAdd)
+		r5.POST("/tagDel", controller.PostTagDel)
+		r5.POST("/TagCname", controller.PostTagCname)
 	}
 	return router
 }
