@@ -40,7 +40,7 @@ func InitRouter() *gin.Engine {
 		r3.PUT("/articleSubmit", article.PutArticleSubmit)
 		r3.PUT("/articleRelease", article.PutArticleRelease)
 		r3.DELETE("/articleDelete", article.DeleteArticleDel)
-		r3.GET("/articleListBySpecial", article.GetArticlelistBySpecial)
+		r3.GET("/articleListByColumn", article.GetArticleListByColumn)
 		r3.GET("/articleListByTag", article.GetArticleListByTag)
 		r3.GET("/getFailedArticleList", article.GetFailedArticleList)
 		r3.GET("/getWillBeReleaseArticleList", article.GetWillBeReleaseArticleList)
@@ -49,7 +49,7 @@ func InitRouter() *gin.Engine {
 	r4 := router.Group("/column")
 	{
 		r4.POST("/columnAdd", column.PostColumnAdd)
-		r4.PUT("/columnCname", column.PutColumncname)
+		r4.PUT("/columnCname", column.PutColumnCname)
 		r4.DELETE("/columnDel", column.DeleteColumn)
 		r4.GET("/columnList", column.GetColumnList)
 	}

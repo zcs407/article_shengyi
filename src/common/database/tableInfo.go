@@ -26,7 +26,7 @@ type Article struct {
 	Images      []Image //链接地址
 	Status      int     `gorm:"size:11"` //审批状态,0编辑中,1审批中,2审批通过,3审批失败
 	Tags        []*Tag  `gorm:"many2many:article_tag;"`
-	SpecialId   int
+	ColumnId    int
 }
 type Image struct {
 	Id        int `gorm:"AUTO_INCREMENT"`
@@ -41,10 +41,10 @@ type Tag struct {
 }
 
 //专题
-type Special struct {
-	Id          int
-	SpecialName string
-	Pid         int //上级专题的id
-	Articles    []*Article
-	Specials    []Special `gorm:"-"`
+type Column struct {
+	Id         int
+	ColumnName string
+	Pid        int //上级专题的id
+	Articles   []*Article
+	Columns    []Column `gorm:"-"`
 }

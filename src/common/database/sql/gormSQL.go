@@ -196,16 +196,16 @@ func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
 
 //查询某专题的文章
 
-func ArticleSelectBySpecial(sid string) {
+func ArticleSelectByColumn(sid string) {
 	db := database.DBSQL
 
-	var specials []database.Special
+	var columns []database.Column
 	article := database.Article{}
 	err := db.Find(&article, sid).Error
 	if err != nil {
 		fmt.Println("查不到")
 	}
-	err = db.Model(&article).Related(&specials, "Specials").Error
+	err = db.Model(&article).Related(&columns, "Columns").Error
 	if err != nil {
 		return
 	}
@@ -299,60 +299,64 @@ func ArticleImageDelByAid(aid string) []database.Image {
 
 ////////////////////////////////////////////////专题管理////////////////////////////////////////////
 //创建专题
-func SpecialAdd(special *database.Special) (string, error) {
+func ColumnAdd(name string, id int) (database.Column, error) {
 	db := database.DBSQL
-
-	if err := db.Create(&special).Error; err != nil {
-		return "", err
+	column := database.Column{}
+	column.ColumnName = name
+	column.Id = id
+	if err := db.Create(&column).Error; err != nil {
+		return column, err
 	}
-	return strconv.Itoa(special.Id), nil
+	return column, nil
 }
 
 //按pid查询专题列表
-func SpecialListByPid(pid int) ([]database.Special, error) {
+func ColumnListByPid(pid int) ([]database.Column, error) {
 	db := database.DBSQL
 
-	specials := []database.Special{}
-	err := db.Where("pid = ?", pid).Find(&specials).Error
+	columns := []database.Column{}
+	err := db.Where("pid = ?", pid).Find(&columns).Error
 	if err != nil {
 		return nil, err
 	}
-	return specials, nil
+	return columns, nil
 }
 
 //按id查询专题列表
-func SpecialListById(id int) ([]database.Special, error) {
+func ColumnListById(id int) ([]database.Column, error) {
 	db := database.DBSQL
 
-	specials := []database.Special{}
-	err := db.Where("pid = ?", id).Find(&specials).Error
+	columns := []database.Column{}
+	err := db.Where("pid = ?", id).Find(&columns).Error
 	if err != nil {
 		return nil, err
 	}
 	//defer db.Close()
-	return specials, nil
+	return columns, nil
 }
 
 //更新专题名称
-func SpecialCname(sid, newName string) error {
+func ColumnCname(sid, newName string) (database.Column, error) {
 	db := database.DBSQL
 
 	sidInt, _ := strconv.Atoi(sid)
-	special := database.Special{}
-	err := db.Model(&special).Where("id = ?", sidInt).Update("name = ?", newName).Error
+	column := database.Column{}
+	err := db.Model(&column).Where("id = ?", sidInt).Update("name = ?", newName).Error
 	if err != nil {
-		return err
+		return column, err
 	}
-	return nil
+	column.Articles = nil
+	column.Columns = nil
+	return column, nil
 }
 
 //删除专题
-func SpecialDel(sid string) error {
+func ColumnDel(sid string) error {
 	db := database.DBSQL
 
-	special := database.Special{}
+	column := database.Column{}
 	sidInt, _ := strconv.Atoi(sid)
-	err := db.Where("id = ?", sidInt).Delete(&special).Error
+	err := db.Where("id = ?", sidInt).Delete(&column).Error
 	if err != nil {
 		return err
 	}
@@ -360,12 +364,12 @@ func SpecialDel(sid string) error {
 }
 
 //是否有子专题
-func SpecialHasSub(sid string) bool {
+func ColumnHasSub(sid string) bool {
 	db := database.DBSQL
 
-	special := database.Special{}
+	column := database.Column{}
 	sidInt, _ := strconv.Atoi(sid)
-	err := db.Where("pid = ?", sidInt).First(&special).Error
+	err := db.Where("pid = ?", sidInt).First(&column).Error
 	if err != nil {
 		return false
 	}
@@ -373,11 +377,11 @@ func SpecialHasSub(sid string) bool {
 }
 
 //通过专题名判断是否存在
-func IsexistSpecial(specialname string) bool {
+func IsexistColumn(columnname string) bool {
 	db := database.DBSQL
 
-	special := database.Special{}
-	err := db.Raw("select special_name from column where special_name = ?", specialname).Scan(&special).Error
+	column := database.Column{}
+	err := db.Raw("select column_name from column where column_name = ?", columnname).Scan(&column).Error
 	if err != nil {
 		return false
 	}
@@ -385,12 +389,12 @@ func IsexistSpecial(specialname string) bool {
 }
 
 //通过专题id判断是否存在
-func IsExistSpecialBySid(sid string) bool {
+func IsExistColumnBySid(sid string) bool {
 	db := database.DBSQL
 
 	sidInt, _ := strconv.Atoi(sid)
-	special := database.Special{}
-	err := db.Where("id = ?", sidInt).Find(&special).Error
+	column := database.Column{}
+	err := db.Where("id = ?", sidInt).Find(&column).Error
 	if err != nil {
 		return false
 	}
@@ -441,13 +445,13 @@ func TagDelById(tid string) (string, error) {
 	db := database.DBSQL
 
 	tag := database.Tag{}
-	tidint, _ := strconv.Atoi(tid)
-	db.Where("id = ?", tidint).First(&tag)
-	tname := tag.TagName
+	tidInt, _ := strconv.Atoi(tid)
+	db.Where("id = ?", tidInt).First(&tag)
+	tName := tag.TagName
 	if err := db.Delete(&tag).Error; err != nil {
 		return "", err
 	}
-	return tname, nil
+	return tName, nil
 }
 
 //标签更名

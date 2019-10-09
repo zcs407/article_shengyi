@@ -47,9 +47,9 @@ func GetArticleListByTag(ctx *gin.Context) {
 	Log.Info(LOG_ARTICLE_LISTBYTAG_SUCCESS, RESP_INFO_OK)
 	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
 }
-func GetArticlelistBySpecial(ctx *gin.Context) {
+func GetArticleListByColumn(ctx *gin.Context) {
 	//sid := ctx.Query("sid")
-	//database.ArticleSelectBySpecial(sid)
+	//database.ArticleSelectByColumn(sid)
 	//TODO
 }
 func GetFailedArticleList(ctx *gin.Context) {
@@ -71,11 +71,11 @@ func PatchArticleEdit(ctx *gin.Context) {
 
 func PostArticleAdd(ctx *gin.Context) {
 	var article struct {
-		Uid       string   `json:"uid"`
-		Title     string   `json:"title"`
-		Content   string   `json:"content"`
-		SpecialId string   `json:"special_id"`
-		Tags      []string `json:"tags"`
+		Uid      string   `json:"uid"`
+		Title    string   `json:"title"`
+		Content  string   `json:"content"`
+		ColumnId string   `json:"column_id"`
+		Tags     []string `json:"tags"`
 	}
 	//获取post的文章信息
 	err := ctx.BindJSON(&article)
@@ -89,8 +89,8 @@ func PostArticleAdd(ctx *gin.Context) {
 	uidInt, _ := strconv.Atoi(uid)
 	content := article.Content
 	title := article.Title
-	specialId := article.SpecialId
-	sid, _ := strconv.Atoi(specialId)
+	columnId := article.ColumnId
+	sid, _ := strconv.Atoi(columnId)
 	tags := article.Tags
 	//创建本地文件用于保存文章
 	contentFile, err := ioutil.TempFile("./articleData/articleFile/", "article-*.txt")
@@ -108,11 +108,11 @@ func PostArticleAdd(ctx *gin.Context) {
 		ContentPath: "./" + contentPath,
 		CreateTime:  time.Now().Format("2006-01-02 15:04:05"),
 		Status:      0,
-		SpecialId:   sid,
+		ColumnId:    sid,
 	}
 
 	//判空
-	if uid == "" || article.Title == "" || content == "" || len(tags) == 0 || specialId == "" {
+	if uid == "" || article.Title == "" || content == "" || len(tags) == 0 || columnId == "" {
 		Log.Error(LOG_ARTICLE_ADD_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
