@@ -41,10 +41,10 @@ type Tag struct {
 }
 
 //专题
-type Column struct {
+type Columns struct {
 	Id         int
 	ColumnName string
 	Pid        int //上级专题的id
 	Articles   []*Article
-	Columns    []Column `gorm:"-"`
+	Columns    []Columns `gorm:"-"`
 }

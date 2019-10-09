@@ -93,7 +93,11 @@ func PostArticleAdd(ctx *gin.Context) {
 	sid, _ := strconv.Atoi(columnId)
 	tags := article.Tags
 	//创建本地文件用于保存文章
-	contentFile, err := ioutil.TempFile("./articleData/articleFile/", "article-*.txt")
+	contentFile, err := ioutil.TempFile("/Users/ander/go/src/articlebk/articleData/articleFile/", "article-*.txt")
+	if err != nil {
+		Log.Error(LOG_ARTICLE_ADD_ERR, "创建文章文件出错!!", err)
+		Resp(ctx, RESP_CODE_CERATE_ERR, "创建文章文件出错!!", nil)
+	}
 	contentPath := contentFile.Name()
 	defer contentFile.Close()
 	//创建Url提供用户访问
@@ -105,7 +109,7 @@ func PostArticleAdd(ctx *gin.Context) {
 		UserId:      uidInt,
 		Title:       title,
 		ContentUrl:  contentUrl,
-		ContentPath: "./" + contentPath,
+		ContentPath: contentPath,
 		CreateTime:  time.Now().Format("2006-01-02 15:04:05"),
 		Status:      0,
 		ColumnId:    sid,
@@ -123,6 +127,21 @@ func PostArticleAdd(ctx *gin.Context) {
 		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISEXISTS, nil)
 		return
 	}
+	//查看专栏是否存在
+	if !sql.IsExistColumnBySid(columnId) {
+		Log.Error(LOG_ARTICLE_ADD_ERR, "专栏不存在")
+		Resp(ctx, RESP_CODE_DATAISEXISTS, "专栏不存在", nil)
+		return
+	}
+	//查看标签是否存在
+	for _, tag := range tags {
+		if !sql.IsexistTagById(tag) {
+			Log.Error(LOG_ARTICLE_ADD_ERR, "标签不存在")
+			Resp(ctx, RESP_CODE_DATAISEXISTS, "标签不存在", nil)
+			return
+		}
+	}
+
 	art, err := sql.ArticleAdd(articleTable, tags)
 	if err != nil {
 		Log.Error(LOG_ARTICLE_ADD_ERR, DB_CREATE_ERR, err)

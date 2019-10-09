@@ -151,7 +151,6 @@ func DeleteUser(uid string) error {
 //创建文章
 func ArticleAdd(article database.Article, tags []string) (database.Article, error) {
 	db := database.DBSQL
-
 	for _, tag := range tags {
 		tid, _ := strconv.Atoi(tag)
 		var tag database.Tag
@@ -199,7 +198,7 @@ func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
 func ArticleSelectByColumn(sid string) {
 	db := database.DBSQL
 
-	var columns []database.Column
+	var columns []database.Columns
 	article := database.Article{}
 	err := db.Find(&article, sid).Error
 	if err != nil {
@@ -263,7 +262,7 @@ func UserHasArticle(aid, uid int) bool {
 func ArticleSubmit(aid, uid int) error {
 	db := database.DBSQL
 	article := database.Article{}
-	err := db.Model(&article).Where("user_id = ? AND id = ?", uid, aid).Update("status = ?", 1).Error
+	err := db.Model(&article).Where("user_id = ? AND id = ?", uid, aid).Update("status", 1).Error
 	if err != nil {
 		return err
 	}
@@ -299,11 +298,11 @@ func ArticleImageDelByAid(aid string) []database.Image {
 
 ////////////////////////////////////////////////专题管理////////////////////////////////////////////
 //创建专题
-func ColumnAdd(name string, id int) (database.Column, error) {
+func ColumnAdd(name string, Pid int) (database.Columns, error) {
 	db := database.DBSQL
-	column := database.Column{}
+	column := database.Columns{}
 	column.ColumnName = name
-	column.Id = id
+	column.Pid = Pid
 	if err := db.Create(&column).Error; err != nil {
 		return column, err
 	}
@@ -311,10 +310,10 @@ func ColumnAdd(name string, id int) (database.Column, error) {
 }
 
 //按pid查询专题列表
-func ColumnListByPid(pid int) ([]database.Column, error) {
+func ColumnListByPid(pid int) ([]database.Columns, error) {
 	db := database.DBSQL
 
-	columns := []database.Column{}
+	columns := []database.Columns{}
 	err := db.Where("pid = ?", pid).Find(&columns).Error
 	if err != nil {
 		return nil, err
@@ -323,10 +322,10 @@ func ColumnListByPid(pid int) ([]database.Column, error) {
 }
 
 //按id查询专题列表
-func ColumnListById(id int) ([]database.Column, error) {
+func ColumnListById(id int) ([]database.Columns, error) {
 	db := database.DBSQL
 
-	columns := []database.Column{}
+	columns := []database.Columns{}
 	err := db.Where("pid = ?", id).Find(&columns).Error
 	if err != nil {
 		return nil, err
@@ -336,12 +335,11 @@ func ColumnListById(id int) ([]database.Column, error) {
 }
 
 //更新专题名称
-func ColumnCname(sid, newName string) (database.Column, error) {
+func ColumnCname(sid, newName string) (database.Columns, error) {
 	db := database.DBSQL
-
 	sidInt, _ := strconv.Atoi(sid)
-	column := database.Column{}
-	err := db.Model(&column).Where("id = ?", sidInt).Update("name = ?", newName).Error
+	column := database.Columns{}
+	err := db.Model(&column).Where("id = ?", sidInt).Update("column_name", newName).Error
 	if err != nil {
 		return column, err
 	}
@@ -353,8 +351,7 @@ func ColumnCname(sid, newName string) (database.Column, error) {
 //删除专题
 func ColumnDel(sid string) error {
 	db := database.DBSQL
-
-	column := database.Column{}
+	column := database.Columns{}
 	sidInt, _ := strconv.Atoi(sid)
 	err := db.Where("id = ?", sidInt).Delete(&column).Error
 	if err != nil {
@@ -367,7 +364,7 @@ func ColumnDel(sid string) error {
 func ColumnHasSub(sid string) bool {
 	db := database.DBSQL
 
-	column := database.Column{}
+	column := database.Columns{}
 	sidInt, _ := strconv.Atoi(sid)
 	err := db.Where("pid = ?", sidInt).First(&column).Error
 	if err != nil {
@@ -380,8 +377,8 @@ func ColumnHasSub(sid string) bool {
 func IsexistColumn(columnname string) bool {
 	db := database.DBSQL
 
-	column := database.Column{}
-	err := db.Raw("select column_name from column where column_name = ?", columnname).Scan(&column).Error
+	column := database.Columns{}
+	err := db.Where("column_name = ?", columnname).First(&column).Error
 	if err != nil {
 		return false
 	}
@@ -393,7 +390,7 @@ func IsExistColumnBySid(sid string) bool {
 	db := database.DBSQL
 
 	sidInt, _ := strconv.Atoi(sid)
-	column := database.Column{}
+	column := database.Columns{}
 	err := db.Where("id = ?", sidInt).Find(&column).Error
 	if err != nil {
 		return false

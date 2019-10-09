@@ -10,10 +10,9 @@ import (
 )
 
 func PostColumnAdd(ctx *gin.Context) {
-
 	var column struct {
-		columnName string `json:"column_name"`
-		ParentId   string `json:"parent_id"`
+		Name     string `json:"name"`
+		ParentId string `json:"parent_id"`
 	}
 
 	if err := ctx.BindJSON(&column); err != nil {
@@ -21,9 +20,9 @@ func PostColumnAdd(ctx *gin.Context) {
 		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
 		return
 	}
-	columnName := column.columnName
+	colName := column.Name
 	columnParentId := column.ParentId
-	if columnName == "" {
+	if len(colName) == 0 {
 		Log.Error(LOG_COLUMN_ADD_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -33,7 +32,7 @@ func PostColumnAdd(ctx *gin.Context) {
 		columnParentId = "0"
 	}
 	columnPid, _ := strconv.Atoi(columnParentId)
-	if sql.IsexistColumn(columnName) {
+	if sql.IsexistColumn(colName) {
 		Log.Error(LOG_COLUMN_ADD_ERR, RESP_INFO_DATAISEXISTS)
 		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISEXISTS, nil)
 		return
@@ -45,7 +44,7 @@ func PostColumnAdd(ctx *gin.Context) {
 	//	return
 	//}
 
-	col, err := sql.ColumnAdd(columnName, columnPid)
+	col, err := sql.ColumnAdd(colName, columnPid)
 	if err != nil {
 		Log.Error(LOG_COLUMN_ADD_ERR, DB_CREATE_ERR, err)
 		Resp(ctx, RESP_CODE_CERATE_ERR, DB_CREATE_ERR, nil)
@@ -96,7 +95,7 @@ func DeleteColumn(ctx *gin.Context) {
 }
 
 func GetColumnList(ctx *gin.Context) {
-	columnList := []database.Column{}
+	columnList := []database.Columns{}
 	columns, err := sql.ColumnListByPid(0)
 	if err != nil {
 		Log.Error(LOG_COLUMN_LIST_ERR, DB_SELECT_ERR, err)
@@ -107,11 +106,11 @@ func GetColumnList(ctx *gin.Context) {
 		getAllColumn(&column)
 		columnList = append(columnList, column)
 	}
-	Log.Info(LOG_COLUMN_LIST_ERR, DB_SELECT_ERR, err)
-	Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, columnList)
+	Log.Info(LOG_COLUMN_LIST_SUCCSEE, RESP_INFO_OK, err)
+	Resp(ctx, RESP_CODE_SELECT, RESP_INFO_OK, columnList)
 }
 
-func getAllColumn(column *database.Column) {
+func getAllColumn(column *database.Columns) {
 	sps, err := sql.ColumnListById(column.Id)
 	if err != nil {
 		Log.Error(LOG_COLUMN_LIST_ERR, DB_SELECT_ERR, err)
@@ -125,8 +124,8 @@ func getAllColumn(column *database.Column) {
 
 func PutColumnCname(ctx *gin.Context) {
 	var columnInfo struct {
-		columnId      string `json:"column_id"`
-		columnNewName string `json:"column_new_name"`
+		ColumId       string `json:"column_id"`
+		ColumnNewName string `json:"column_new_name"`
 	}
 
 	err := ctx.BindJSON(&columnInfo)
@@ -136,8 +135,8 @@ func PutColumnCname(ctx *gin.Context) {
 		return
 	}
 	//获取专题信息判空
-	sid := columnInfo.columnId
-	newName := columnInfo.columnNewName
+	sid := columnInfo.ColumId
+	newName := columnInfo.ColumnNewName
 	if sid == "" || newName == "" {
 		Log.Error(LOG_COLUMN_CNAME_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
@@ -151,11 +150,12 @@ func PutColumnCname(ctx *gin.Context) {
 	}
 	//修改专题名
 	col, err := sql.ColumnCname(sid, newName)
+
 	if err != nil {
 		Log.Error(LOG_COLUMN_CNAME_ERR, DB_UPDATE_ERR, err)
 		Resp(ctx, RESP_CODE_UPDATE_ERR, DB_UPDATE_ERR, nil)
 		return
 	}
-	Log.Info(LOG_COLUMN_ADD_SUCCESS, RESP_INFO_OK)
+	Log.Info(LOG_COLUMN_CNAME_SUCCESS, RESP_INFO_OK)
 	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, col)
 }

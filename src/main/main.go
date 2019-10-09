@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
-
 	"os"
 	"time"
 )
@@ -18,9 +17,12 @@ var (
 
 func main() {
 
+	common.InitConfig(confPath, common.Settings)
+	common.InitLog(common.Settings.Logging.Path, common.Settings.Logging.Level, common.Settings.Logging.Format)
+	database.InitDB(common.Settings.Database)
+	common.Log.Info("初始化完毕,启动api服务,配置文件路径为:%s", confPath)
 	router := gin.Default()
 	gin.DisableConsoleColor()
-
 	// 创建记录日志的文件
 	f, _ := os.Create(common.Settings.Logging.Path)
 	// 只输出日志到文件,不在终端打印
@@ -41,10 +43,6 @@ func main() {
 			param.ErrorMessage,
 		)
 	}))
-	common.InitConfig(confPath, common.Settings)
-	common.InitLog(common.Settings.Logging.Path, common.Settings.Logging.Level, common.Settings.Logging.Format)
-	database.InitDB(common.Settings.Database)
-	common.Log.Info("初始化完毕,启动api服务,配置文件路径为:%s", confPath)
 	router = router2.InitRouter()
 	common.Log.Info("访问地址:http://%s", common.Settings.ApiServer.Address)
 	_ = router.Run(common.Settings.ApiServer.Address)

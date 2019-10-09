@@ -35,7 +35,7 @@ func InitDB(mysql common.Database) {
 	//连接最大超时时间
 	db.DB().SetConnMaxLifetime(time.Hour)
 	db.SingularTable(true)
-	db.AutoMigrate(&User{}, &Article{}, &Image{}, &Column{}, &Tag{})
+	db.AutoMigrate(&User{}, &Article{}, &Image{}, &Columns{}, &Tag{})
 	//go func() {
 	//	timer := time.NewTicker(5 * time.Second)
 	//	for {
