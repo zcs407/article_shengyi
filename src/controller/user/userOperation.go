@@ -247,7 +247,8 @@ func PutUserPwdUpdate(ctx *gin.Context) {
 	//获取post中的用户信息
 	err := ctx.BindJSON(&userInfo)
 	if err != nil {
-
+		Log.Error(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
 		return
 	}
 	//赋值判空
@@ -255,12 +256,14 @@ func PutUserPwdUpdate(ctx *gin.Context) {
 	opwd := userInfo.OldPassword
 	npwd := userInfo.NewPassword
 	if uid == "" || opwd == "" || npwd == "" {
-
+		Log.Error(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
 	}
 	//判断用户是否存在
 	if !sql.UserIsExistByUid(uid) {
-
+		Log.Error(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_DATAISNOTEXISTS)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
 		return
 	}
 	//给明文密码加密
@@ -272,17 +275,16 @@ func PutUserPwdUpdate(ctx *gin.Context) {
 	opwdh5 := hex.EncodeToString(dm5old.Sum(nil))
 	//验证用户老密码是否正确
 	if !sql.VerifyUserPwd(uid, opwdh5) {
-
+		Log.Error(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_NOPERMISSION)
+		Resp(ctx, RESP_CODE_NOPERMISSION, RESP_INFO_NOPERMISSION, nil)
 		return
 	}
 	err = sql.UpdateUserPwd(uid, npwdh5)
 	if err != nil {
-
+		Log.Error(LOG_USER_UPDATE_PWD_ERR, DB_UPDATE_ERR, err)
+		Resp(ctx, RESP_CODE_UPDATE_ERR, DB_UPDATE_ERR, nil)
 		return
 	}
-	resp.UserId = uid
-	resp.Code = "200"
-	resp.Info = "用户密码更新完成"
-	loger.Println("[user_pwd_update_err]", resp, err)
-	ctx.JSON(200, resp)
+	Log.Info(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
 }

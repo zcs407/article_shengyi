@@ -61,6 +61,7 @@ const (
 	LOG_USER_ADD_ERR           = "[USER_ADD_ERR]: %s"
 	LOG_USER_DELETE_ERR        = "[USER_DELETE_ERR]: %s"
 	LOG_USER_UPDATE_ROLLER_ERR = "[USER_UPDATE_ROLLER_ERR]: %s"
+	LOG_USER_UPDATE_PWD_ERR    = "[USER_UPDATE_PWD_ERR]: %s"
 	LOG_USER_CNAME_ERR         = "[USER_CNAME_ERR]: %s"
 	LOG_USER_ISEXISTS          = "用户已存在"
 	LOG_USER_CREATE_OK         = "用户创建成功"
