@@ -3,7 +3,6 @@ package common
 import (
 	"errors"
 	"github.com/BurntSushi/toml"
-	"log"
 	"path/filepath"
 )
 
@@ -47,7 +46,5 @@ func InitConfig(path string, config interface{}) {
 	}
 	if _, err = toml.DecodeFile(configPath, config); err != nil {
 		panic(err)
-	} else {
-		log.Println("配置文件路径:", path)
 	}
 }

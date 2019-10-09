@@ -133,7 +133,7 @@ func InitLog(path, level, format string) {
 	logFd, err := os.OpenFile(path, os.O_RDWR|os.O_APPEND|os.O_CREATE|os.O_SYNC, 0666)
 	if err != nil {
 		fmt.Printf("无法打开日志文件 %s 错误信息为: %v \n", path, err)
-		//os.Exit(1)
+		panic(err)
 	}
 
 	Log = &QYLog{log: logrus.New(), fd: logFd}
@@ -159,6 +159,5 @@ func InitLog(path, level, format string) {
 	default:
 		Log.log.Formatter = &logrus.TextFormatter{FullTimestamp: true, DisableColors: false, DisableSorting: false}
 	}
-
 	Log.log.Out = logFd
 }

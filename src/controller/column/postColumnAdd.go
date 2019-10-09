@@ -1,8 +1,8 @@
 package column
 
 import (
-	"articlebk/src/common/dbtable"
-	"articlebk/src/common/sql"
+	"articlebk/src/common/database"
+	"articlebk/src/common/database/sql"
 	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
@@ -48,7 +48,7 @@ func PostColumnAdd(ctx *gin.Context) {
 		specialParentId = "0"
 	}
 	specialPid, _ := strconv.Atoi(specialParentId)
-	specialinfo := dbtable.Special{
+	specialinfo := database.Special{
 		SpecialName: specialName,
 		Pid:         specialPid,
 	}

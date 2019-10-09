@@ -2,11 +2,12 @@ package main
 
 import (
 	"articlebk/src/common"
+	"articlebk/src/common/database"
 	router2 "articlebk/src/common/router"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
-	"log"
+
 	"os"
 	"time"
 )
@@ -40,13 +41,11 @@ func main() {
 			param.ErrorMessage,
 		)
 	}))
-	log.Printf("配置文件路径为:%s\n", confPath)
 	common.InitConfig(confPath, common.Settings)
 	common.InitLog(common.Settings.Logging.Path, common.Settings.Logging.Level, common.Settings.Logging.Format)
-
-	common.InitDB(common.Settings.Database)
-	log.Println("目前没问题")
-
+	database.InitDB(common.Settings.Database)
+	common.Log.Info("初始化完毕,启动api服务,配置文件路径为:%s", confPath)
 	router = router2.InitRouter()
+	common.Log.Info("访问地址:http://%s", common.Settings.ApiServer.Address)
 	_ = router.Run(common.Settings.ApiServer.Address)
 }

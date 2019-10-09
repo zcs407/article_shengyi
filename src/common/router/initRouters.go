@@ -41,7 +41,7 @@ func InitRouter() *gin.Engine {
 		r3.PUT("/articleRelease", article.PutArticleRelease)
 		r3.DELETE("/articleDelete", article.DeleteArticleDel)
 		r3.GET("/articleListBySpecial", article.GetArticlelistBySpecial)
-		r3.GET("/articleListByTag", article.GetArtileListByTag)
+		r3.GET("/articleListByTag", article.GetArticleListByTag)
 		r3.GET("/getFailedArticleList", article.GetFailedArticleList)
 		r3.GET("/getWillBeReleaseArticleList", article.GetWillBeReleaseArticleList)
 		r3.GET("/getReleasedArticleList", article.GetReleasedArticleList)

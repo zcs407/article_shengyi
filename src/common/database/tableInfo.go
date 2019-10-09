@@ -1,4 +1,4 @@
-package dbtable
+package database
 
 import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -11,7 +11,7 @@ type User struct {
 	PasswordHash string `gorm:"size:128" `      //用户密码加密的
 	//Mobile        string `gorm:"size:11;unique" ` //手机号
 	RollerId int       //0为管理员,1为编辑,2为普通用户
-	Articles []Article //用户只能查看自己的文章
+	Articles []Article //用户创建的文章
 }
 
 /* 文章表 table_name = article */

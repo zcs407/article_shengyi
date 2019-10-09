@@ -1,28 +1,28 @@
 package sql
 
 import (
-	"articlebk/src/common"
-	"articlebk/src/common/dbtable"
+	"articlebk/src/common/database"
 	"fmt"
-
 	"strconv"
 )
 
 ///////////////////////////////////////////////////用户管理////////////////////////////////////////
 //用户注册
-func RegisterUser(userInfo *dbtable.User) (uName, uid, rid string, err error) {
-	db := common.DBSQL
+func RegisterUser(userInfo *database.User) (*database.User, error) {
+	db := database.DBSQL
 	if err := db.Create(&userInfo).Error; err != nil {
-		return "", "", "", err
+		return userInfo, err
 	}
-	return userInfo.Name, strconv.Itoa(userInfo.Id), strconv.Itoa(userInfo.RollerId), nil
+	userInfo.PasswordHash = ""
+	userInfo.Articles = nil
+	return userInfo, nil
 }
 
 //用uid和角色id验证用户是否存在
 func IsExistByUidRid(uid, rid string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	user := dbtable.User{}
+	user := database.User{}
 	uidInt, _ := strconv.Atoi(uid)
 	ridInt, _ := strconv.Atoi(rid)
 	if err := db.Where("id = ? AND roller_id = ?", uidInt, ridInt).First(&user).Error; err != nil {
@@ -33,9 +33,9 @@ func IsExistByUidRid(uid, rid string) bool {
 
 //用户是否存在,username查询(仅用于用户注册和登录时使用)
 func UserIsExistByName(username string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	user := dbtable.User{}
+	user := database.User{}
 	err := db.Raw("select Name from user where name = ?", username).Scan(&user).Error
 	if err != nil {
 		return false
@@ -45,8 +45,8 @@ func UserIsExistByName(username string) bool {
 
 //用户是否为管理员
 func UserIsAdmin(uid string) bool {
-	db := common.DBSQL
-	user := dbtable.User{}
+	db := database.DBSQL
+	user := database.User{}
 	id, _ := strconv.Atoi(uid)
 	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
 		return false
@@ -56,10 +56,10 @@ func UserIsAdmin(uid string) bool {
 
 //用户是否存在,用uid查询
 func UserIsExistByUid(uid string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	uidint, _ := strconv.Atoi(uid)
-	user := dbtable.User{}
+	user := database.User{}
 	if err := db.Where("id = ?", uidint).First(&user).Error; err != nil {
 		return false
 	}
@@ -67,22 +67,23 @@ func UserIsExistByUid(uid string) bool {
 }
 
 //用户登录
-func UserLogin(username, password string) (uname, uid, rid string, err error) {
-	db := common.DBSQL
-
-	user := dbtable.User{}
-	err = db.Where("name = ? AND password_hash = ?", username, password).Find(&user).Error
+func UserLogin(username, password string) (database.User, error) {
+	db := database.DBSQL
+	user := database.User{}
+	err := db.Where("name = ? AND password_hash = ?", username, password).Find(&user).Error
 	if err != nil {
-		return "", "", "", err
+		return user, err
 	}
-	return user.Name, strconv.Itoa(user.Id), strconv.Itoa(user.RollerId), nil
+	user.PasswordHash = ""
+	user.Articles = nil
+	return user, nil
 }
 
 //用户列表查询,仅管理员可查,可跟实际需求修改
-func UserListGet() ([]dbtable.User, error) {
-	db := common.DBSQL
+func UserListGet() ([]database.User, error) {
+	db := database.DBSQL
 
-	var users []dbtable.User
+	var users []database.User
 	if err := db.Select("id, name, roller_id").Find(&users).Error; err != nil {
 		return nil, err
 	}
@@ -90,26 +91,27 @@ func UserListGet() ([]dbtable.User, error) {
 }
 
 //用户角色变更
-func UserRollerUpdate(uid, username, newrolleid string) (uname, uuid, urid string, err error) {
-	db := common.DBSQL
-
+func UserRollerUpdate(uid, username, newrolleid string) (database.User, error) {
+	db := database.DBSQL
 	uidint, _ := strconv.Atoi(uid)
-	user := dbtable.User{}
-	err = db.Exec("UPDATE user SET roller_id = ? WHERE id = ? AND name = ?", newrolleid, uidint, username).Error
+	user := database.User{}
+	err := db.Exec("UPDATE user SET roller_id = ? WHERE id = ? AND name = ?", newrolleid, uidint, username).Error
 	if err != nil {
-		return "", "", "", err
+		return user, err
 	}
 	user.Id = uidint
 	db.First(&user)
-	return user.Name, strconv.Itoa(user.Id), strconv.Itoa(user.RollerId), nil
+	user.PasswordHash = ""
+	user.Articles = nil
+	return user, nil
 }
 
 //用户密码修改
 func UpdateUserPwd(uid, npwd string) error {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	uidInt, _ := strconv.Atoi(uid)
-	user := dbtable.User{}
+	user := database.User{}
 	if err := db.Model(&user).Where("id = ?", uidInt).Update("password_hash", npwd).Error; err != nil {
 		return err
 	}
@@ -118,10 +120,10 @@ func UpdateUserPwd(uid, npwd string) error {
 
 //根据uid和密码验证用户是否密码正确
 func VerifyUserPwd(uid, opwd string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	uidInt, _ := strconv.Atoi(uid)
-	user := dbtable.User{}
+	user := database.User{}
 	err := db.Where("id = ? AND password_hash = ?", uidInt, opwd).First(&user).Error
 	if err != nil {
 		return false
@@ -131,10 +133,10 @@ func VerifyUserPwd(uid, opwd string) bool {
 
 //删除用户
 func DeleteUser(uid string) error {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	uidInt, _ := strconv.Atoi(uid)
-	user := dbtable.User{}
+	user := database.User{}
 	if err := db.Where("id = ?", uidInt).First(&user).Error; err != nil {
 		return err
 	}
@@ -147,22 +149,22 @@ func DeleteUser(uid string) error {
 ////////////////////////////////////////////////////////文章管理/////////////////////////////////////
 
 //创建文章
-func ArticleAdd(article dbtable.Article, tags []string) (string, error) {
-	db := common.DBSQL
+func ArticleAdd(article database.Article, tags []string) (database.Article, error) {
+	db := database.DBSQL
 
 	for _, tag := range tags {
 		tid, _ := strconv.Atoi(tag)
-		var tag dbtable.Tag
+		var tag database.Tag
 		if err := db.Where("id = ?", tid).Find(&tag).Error; err != nil {
-			return "", err
+			return article, err
 		}
 		article.Tags = append(article.Tags, &tag)
 	}
 
 	if err := db.Create(&article).Error; err != nil {
-		return "", err
+		return article, err
 	}
-	return strconv.Itoa(article.Id), nil
+	return article, nil
 }
 
 //查询文章列表
@@ -170,13 +172,13 @@ func ArticleAdd(article dbtable.Article, tags []string) (string, error) {
 //查询某个标签的文章集合
 //SELECT article.* FROM article INNER JOIN article_tag
 // ON  article_tag.article_id = article.id WHERE  article_tag.tag_id IN (2);
-func GetArticlesByTagId(tagid string) ([]*dbtable.Article, error) {
-	db := common.DBSQL
+func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
+	db := database.DBSQL
 
 	tid, _ := strconv.Atoi(tagid)
-	var articles []*dbtable.Article
-	var images []dbtable.Image
-	tag := dbtable.Tag{}
+	var articles []*database.Article
+	var images []database.Image
+	tag := database.Tag{}
 	tag.Id = tid
 	err := db.Raw(`SELECT article.* FROM article INNER JOIN article_tag ON article_tag.article_id = article.id WHERE  article_tag.tag_id IN (?);`, tid).Scan(&articles).Error
 	if err != nil {
@@ -195,10 +197,10 @@ func GetArticlesByTagId(tagid string) ([]*dbtable.Article, error) {
 //查询某专题的文章
 
 func ArticleSelectBySpecial(sid string) {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	var specials []dbtable.Special
-	article := dbtable.Article{}
+	var specials []database.Special
+	article := database.Article{}
 	err := db.Find(&article, sid).Error
 	if err != nil {
 		fmt.Println("查不到")
@@ -210,9 +212,9 @@ func ArticleSelectBySpecial(sid string) {
 	return
 }
 
-//更新文章
-func ArticleUpdate(article dbtable.Article) error {
-	db := common.DBSQL
+//编辑更新文章
+func ArticleUpdate(article database.Article) error {
+	db := database.DBSQL
 
 	if err := db.Update(&article).Error; err != nil {
 		return err
@@ -222,9 +224,9 @@ func ArticleUpdate(article dbtable.Article) error {
 
 //删除文章
 func ArticleDel(aid string) (cPath string, err error) {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	article := dbtable.Article{}
+	article := database.Article{}
 	aidInt, _ := strconv.Atoi(aid)
 	db.Where("id = ?", aidInt).First(&article)
 
@@ -237,9 +239,9 @@ func ArticleDel(aid string) (cPath string, err error) {
 
 //文章是否存在
 func IsexistArticle(title string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	article := dbtable.Article{}
+	article := database.Article{}
 	err := db.Raw("select title from article where title = ?", title).Scan(&article).Error
 	if err != nil {
 		return false
@@ -247,11 +249,32 @@ func IsexistArticle(title string) bool {
 	return true
 }
 
+//判断用户与文章是否一致
+func UserHasArticle(aid, uid int) bool {
+	db := database.DBSQL
+	article := database.Article{}
+	if err := db.Where("user_id = ? AND id = ?", uid, aid).First(&article).Error; err != nil {
+		return false
+	}
+	return true
+}
+
+//提交文章
+func ArticleSubmit(aid, uid int) error {
+	db := database.DBSQL
+	article := database.Article{}
+	err := db.Model(&article).Where("user_id = ? AND id = ?", uid, aid).Update("status = ?", 1).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 ///////////////////////////////////////////////图片管理///////////////////////////////////////////
 func ArticleImageAdd(imgurl, imgPath, aid string) error {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	image := dbtable.Image{}
+	image := database.Image{}
 	image.ImageUrl = imgurl
 	image.ImagePath = imgPath
 	err := db.Exec(`INSERT INTO image (article_id,image_url,image_path) VALUES (?,?,?)`, aid, imgurl, imgPath).Error
@@ -261,10 +284,10 @@ func ArticleImageAdd(imgurl, imgPath, aid string) error {
 	return nil
 }
 
-func ArticleImageDelByAid(aid string) []dbtable.Image {
-	db := common.DBSQL
+func ArticleImageDelByAid(aid string) []database.Image {
+	db := database.DBSQL
 
-	images := []dbtable.Image{}
+	images := []database.Image{}
 	aidInt, _ := strconv.Atoi(aid)
 	db.Where("article_id = ?", aidInt).Find(&images)
 	err := db.Where("article_id = ?", aidInt).Delete(&images).Error
@@ -276,8 +299,8 @@ func ArticleImageDelByAid(aid string) []dbtable.Image {
 
 ////////////////////////////////////////////////专题管理////////////////////////////////////////////
 //创建专题
-func SpecialAdd(special *dbtable.Special) (string, error) {
-	db := common.DBSQL
+func SpecialAdd(special *database.Special) (string, error) {
+	db := database.DBSQL
 
 	if err := db.Create(&special).Error; err != nil {
 		return "", err
@@ -286,10 +309,10 @@ func SpecialAdd(special *dbtable.Special) (string, error) {
 }
 
 //按pid查询专题列表
-func SpecialListByPid(pid int) ([]dbtable.Special, error) {
-	db := common.DBSQL
+func SpecialListByPid(pid int) ([]database.Special, error) {
+	db := database.DBSQL
 
-	specials := []dbtable.Special{}
+	specials := []database.Special{}
 	err := db.Where("pid = ?", pid).Find(&specials).Error
 	if err != nil {
 		return nil, err
@@ -298,10 +321,10 @@ func SpecialListByPid(pid int) ([]dbtable.Special, error) {
 }
 
 //按id查询专题列表
-func SpecialListById(id int) ([]dbtable.Special, error) {
-	db := common.DBSQL
+func SpecialListById(id int) ([]database.Special, error) {
+	db := database.DBSQL
 
-	specials := []dbtable.Special{}
+	specials := []database.Special{}
 	err := db.Where("pid = ?", id).Find(&specials).Error
 	if err != nil {
 		return nil, err
@@ -312,10 +335,10 @@ func SpecialListById(id int) ([]dbtable.Special, error) {
 
 //更新专题名称
 func SpecialCname(sid, newName string) error {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	sidInt, _ := strconv.Atoi(sid)
-	special := dbtable.Special{}
+	special := database.Special{}
 	err := db.Model(&special).Where("id = ?", sidInt).Update("name = ?", newName).Error
 	if err != nil {
 		return err
@@ -325,9 +348,9 @@ func SpecialCname(sid, newName string) error {
 
 //删除专题
 func SpecialDel(sid string) error {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	special := dbtable.Special{}
+	special := database.Special{}
 	sidInt, _ := strconv.Atoi(sid)
 	err := db.Where("id = ?", sidInt).Delete(&special).Error
 	if err != nil {
@@ -338,9 +361,9 @@ func SpecialDel(sid string) error {
 
 //是否有子专题
 func SpecialHasSub(sid string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	special := dbtable.Special{}
+	special := database.Special{}
 	sidInt, _ := strconv.Atoi(sid)
 	err := db.Where("pid = ?", sidInt).First(&special).Error
 	if err != nil {
@@ -351,9 +374,9 @@ func SpecialHasSub(sid string) bool {
 
 //通过专题名判断是否存在
 func IsexistSpecial(specialname string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	special := dbtable.Special{}
+	special := database.Special{}
 	err := db.Raw("select special_name from column where special_name = ?", specialname).Scan(&special).Error
 	if err != nil {
 		return false
@@ -363,10 +386,10 @@ func IsexistSpecial(specialname string) bool {
 
 //通过专题id判断是否存在
 func IsExistSpecialBySid(sid string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
 	sidInt, _ := strconv.Atoi(sid)
-	special := dbtable.Special{}
+	special := database.Special{}
 	err := db.Where("id = ?", sidInt).Find(&special).Error
 	if err != nil {
 		return false
@@ -377,9 +400,9 @@ func IsExistSpecialBySid(sid string) bool {
 //////////////////////////////////////////标签管理/////////////////////////////////////////
 //创建标签
 func TagAdd(tname string) (string, error) {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	var tag dbtable.Tag
+	var tag database.Tag
 	tag.TagName = tname
 	if err := db.Create(&tag).Error; err != nil {
 		return "", err
@@ -390,9 +413,9 @@ func TagAdd(tname string) (string, error) {
 
 //标签是否存在
 func IsexistTag(tname string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	tag := dbtable.Tag{}
+	tag := database.Tag{}
 	err := db.Raw("select tag_name from tag where tag_name = ?", tname).Scan(&tag).Error
 	if err != nil {
 		return false
@@ -402,9 +425,9 @@ func IsexistTag(tname string) bool {
 
 //使用id查询标签是否存在
 func IsexistTagById(tid string) bool {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	tag := dbtable.Tag{}
+	tag := database.Tag{}
 	tidint, _ := strconv.Atoi(tid)
 	err := db.Raw("select tag_name from tag where id = ?", tidint).Scan(&tag).Error
 	if err != nil {
@@ -415,9 +438,9 @@ func IsexistTagById(tid string) bool {
 
 //删除标签
 func TagDelById(tid string) (string, error) {
-	db := common.DBSQL
+	db := database.DBSQL
 
-	tag := dbtable.Tag{}
+	tag := database.Tag{}
 	tidint, _ := strconv.Atoi(tid)
 	db.Where("id = ?", tidint).First(&tag)
 	tname := tag.TagName
@@ -429,8 +452,8 @@ func TagDelById(tid string) (string, error) {
 
 //标签更名
 func TagCnameById(tid, tname string) (string, error) {
-	db := common.DBSQL
-	tag := dbtable.Tag{}
+	db := database.DBSQL
+	tag := database.Tag{}
 	tidint, _ := strconv.Atoi(tid)
 	tag.Id = tidint
 	tag.TagName = tname

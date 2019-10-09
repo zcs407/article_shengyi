@@ -1,8 +1,8 @@
 package column
 
 import (
-	"articlebk/src/common/dbtable"
-	"articlebk/src/common/sql"
+	"articlebk/src/common/database"
+	"articlebk/src/common/database/sql"
 	"github.com/gin-gonic/gin"
 
 	"log"
@@ -11,9 +11,9 @@ import (
 func GetColumnList(ctx *gin.Context) {
 	loger := log.New(gin.DefaultWriter, "", log.LstdFlags|log.Lshortfile)
 	var resp struct {
-		Code        string            `json:"code"`
-		Info        string            `json:"info"`
-		SpecialList []dbtable.Special `json:"special_list"`
+		Code        string             `json:"code"`
+		Info        string             `json:"info"`
+		SpecialList []database.Special `json:"special_list"`
 	}
 	specials, err := sql.SpecialListByPid(0)
 	loger.Println("specials,", specials)
@@ -33,7 +33,7 @@ func GetColumnList(ctx *gin.Context) {
 	ctx.JSON(200, resp)
 }
 
-func getAllColumn(special *dbtable.Special) {
+func getAllColumn(special *database.Special) {
 	loger := log.New(gin.DefaultWriter, "", log.LstdFlags|log.Lshortfile)
 	sps, err := sql.SpecialListById(special.Id)
 	if err != nil {

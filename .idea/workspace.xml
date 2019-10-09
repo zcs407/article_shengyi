@@ -2,18 +2,41 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/conf/config.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/constant.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common/log.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controller/article/articleOperation.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/controller/user/userOperation.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/getArticlesByTag.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/getArticlesByTag.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/database.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/dbtable/tableInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/tableInfo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/log.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/log.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/router/initRouters.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/router/initRouters.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getArticlelistBySpecial.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getArticlesByTag.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getFailedArticle.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getReleasedArticleList.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/getWillBeReleaseArticleList.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/article/image/postArticleImageAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/image/postArticleImageAdd.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/postArticleDel.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/postArticleDel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/patchArticleEdit.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/postArticleAdd.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/postArticleDel.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/putArticleRelease.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/article/putArticleSubmit.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/column/deleteColumn.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/column/deleteColumn.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/column/getColumnList.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/column/getColumnList.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/column/postColumnAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/column/postColumnAdd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/column/putColumnCname.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/column/putColumnCname.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/tag/postTagAdd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagCname.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/tag/postTagCname.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagDel.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/tag/postTagDel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/user/deleteUser.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/user/getUserList.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/user/postLogin.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/user/postRegister.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/user/putUserUpdate.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/initinfo/dbInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/router/initRouters.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/router/initRouters.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/sql/gormSQL.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/errornu.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/errornu.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/response.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/response.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,17 +68,17 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/utils/init" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/common/database" />
       <recent name="$PROJECT_DIR$/src/common" />
       <recent name="$PROJECT_DIR$/src/utils/router" />
       <recent name="$PROJECT_DIR$/src/utils/initinfo" />
       <recent name="$PROJECT_DIR$/src" />
-      <recent name="$PROJECT_DIR$/src/utils" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/utils/init" />
@@ -110,7 +133,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

@@ -1,7 +1,7 @@
 package column
 
 import (
-	"articlebk/src/common/sql"
+	"articlebk/src/common/database/sql"
 	"github.com/gin-gonic/gin"
 	"log"
 )
