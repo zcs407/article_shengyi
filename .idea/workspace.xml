@@ -3,16 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/tableInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/tableInfo.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/common/errornu.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/errornu.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/router/initRouters.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/router/initRouters.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/article/articleOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/article/articleOperation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/column/deleteColumn.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/column/getColumnList.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/column/postColumnAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/column/columnOPeration.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/column/putColumnCname.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/tag/tagOperation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagCname.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tag/postTagDel.go" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
