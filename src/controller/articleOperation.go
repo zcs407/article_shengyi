@@ -295,21 +295,24 @@ func PatchArticleEdit(ctx *gin.Context) {
 		Status:      0,
 		ColumnId:    cid,
 	}
-	art, err := sql.ArticleUpdate(newArticle, tags, aid)
-	if err != nil {
-		Log.Error(LOG_ARTICLE_EDIT_ERR, DB_CREATE_ERR, err)
-		Resp(ctx, RESP_CODE_CERATE_ERR, DB_CREATE_ERR, nil)
-		return
-	}
-	contentFile, err := os.Open(article.ContentPath)
+	//打开原有文件,重新写入
+	contentFile, err := os.Create(article.ContentPath)
 	if err != nil {
 		Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_READFILE_ERR, err)
 		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_READFILE_ERR, nil)
 	}
+	defer contentFile.Close()
 	_, err = contentFile.WriteString(content)
 	if err != nil {
-		Log.Error(LOG_ARTICLE_EDIT_ERR, "无法创建文件, 无法保存数据内容", err)
-		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_CREATE_ERR, nil)
+		Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_SAVEFILE_ERR, err)
+		Resp(ctx, RESP_CODE_SAVEFILE_ERR, RESP_INFO_SAVEFILE_ERR, nil)
+		return
+	}
+	//更新数据库
+	art, err := sql.ArticleUpdate(newArticle, tags, aid)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, DB_CREATE_ERR, err)
+		Resp(ctx, RESP_CODE_CERATE_ERR, DB_CREATE_ERR, nil)
 		return
 	}
 	Log.Info(LOG_ARTICLE_EDIT_SUCCESS, RESP_INFO_OK)

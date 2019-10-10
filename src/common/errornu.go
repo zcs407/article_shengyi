@@ -15,6 +15,7 @@ const (
 	RESP_CODE_NOPERMISSION    = "2010"
 	RESP_CODE_SUBMIT_ERR      = "2011"
 	RESP_CODE_READFILE_ERR    = "2012"
+	RESP_CODE_SAVEFILE_ERR    = "2013"
 	///////////////INFO/////////////////////
 	RECODE_INFO_UNKNOWERR = "为知错误"
 	//返回信息的描述
@@ -26,6 +27,7 @@ const (
 	RESP_INFO_CREATE_ERR      = "新增数据失败"
 	RESP_INFO_NOPERMISSION    = "权限不足"
 	RESP_INFO_READFILE_ERR    = "无法读取文章内容"
+	RESP_INFO_SAVEFILE_ERR    = "无法保存数据到文件"
 	//////////////日志按业务定义//////////////////
 
 	//文章错误提示
