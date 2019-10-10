@@ -34,7 +34,7 @@ func PostArticleAdd(ctx *gin.Context) {
 	content := article.Content
 	title := article.Title
 	columnId := article.ColumnId
-	sid, _ := strconv.Atoi(columnId)
+	cid, _ := strconv.Atoi(columnId)
 	tags := article.Tags
 	//创建本地文件用于保存文章
 	contentFile, err := ioutil.TempFile(Settings.FileServer.TextPath, "article-*.txt")
@@ -56,7 +56,7 @@ func PostArticleAdd(ctx *gin.Context) {
 		ContentPath: contentPath,
 		CreateTime:  time.Now().Format("2006-01-02 15:04:05"),
 		Status:      0,
-		ColumnId:    sid,
+		ColumnId:    cid,
 	}
 
 	//判空
@@ -118,7 +118,7 @@ func DeleteArticleDel(ctx *gin.Context) {
 	aid, _ := strconv.Atoi(articleId)
 	userId := delArticle.UserId
 	uid, _ := strconv.Atoi(userId)
-	if articleId == "" || userId == "" {
+	if len(articleId) == 0 || len(userId) == 0 {
 		Log.Error(LOG_ARTICLE_DELETE_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -151,13 +151,169 @@ func DeleteArticleDel(ctx *gin.Context) {
 	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
 }
 
-//文章编辑
-func PatchArticleEdit(ctx *gin.Context) {
-	err := ctx.BindJSON("")
-	if err != nil {
-
+//获取编辑信息
+func GetArticleForEdit(ctx *gin.Context) {
+	respBody := make(map[string]interface{})
+	var getArticle struct {
+		UserId    string `json:"user_id"`
+		ArticleId string `json:"article_id"`
 	}
-	//TODO
+	err := ctx.BindJSON(&getArticle)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	userId := getArticle.UserId
+	uid, _ := strconv.Atoi(userId)
+	articleId := getArticle.ArticleId
+	aid, _ := strconv.Atoi(articleId)
+	if len(userId) == 0 || len(articleId) == 0 {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//判断当前用户是否有权限
+	if !sql.UserIsAdmin(userId) {
+		//是否为作者本人
+		if !sql.UserHasArticle(aid, uid) {
+			Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, RESP_INFO_NOPERMISSION)
+			Resp(ctx, RESP_CODE_NOPERMISSION, RESP_INFO_NOPERMISSION, nil)
+			return
+		}
+	}
+	//根据aid获取文章信息
+	article, err := sql.GetArticleByAid(aid)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, DB_SELECT_ERR, err)
+		Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+		return
+	}
+	//获取所有专栏
+	columns, err := sql.GetColumnList()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, DB_SELECT_ERR, err)
+		Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+		return
+	}
+	//获取所有标签
+	tags, err := sql.GetTagList()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_ERR, DB_SELECT_ERR, err)
+		Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+		return
+	}
+	//读取文件内容并赋值
+	content, err := ioutil.ReadFile(article.ContentPath)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETFOREDIT_SUCCESS, RESP_INFO_READFILE_ERR, err)
+		Resp(ctx, RESP_CODE_READFILE_ERR, RESP_INFO_READFILE_ERR, nil)
+		return
+	}
+	//给返回体赋值
+	respBody["article"] = article
+	respBody["article.content"] = string(content)
+	respBody["columns"] = columns
+	respBody["tags"] = tags
+	Log.Error(LOG_ARTICLE_GETFOREDIT_SUCCESS, DB_SELECT_ERR)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, respBody)
+}
+
+//提交编辑信息
+func PatchArticleEdit(ctx *gin.Context) {
+	var updateArticle struct {
+		Uid       string   `json:"uid"`
+		ArticleId string   `json:"article_id"`
+		Title     string   `json:"title"`
+		Content   string   `json:"content"`
+		ColumnId  string   `json:"column_id"`
+		Tags      []string `json:"tags"`
+	}
+	//获取post的文章信息
+	err := ctx.BindJSON(&updateArticle)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取json中文章的主题/内容/专题id/标签的id数组(一个文章属于多个标签)
+	userId := updateArticle.Uid
+	uid, _ := strconv.Atoi(userId)
+	content := updateArticle.Content
+	title := updateArticle.Title
+	columnId := updateArticle.ColumnId
+	cid, _ := strconv.Atoi(columnId)
+	tags := updateArticle.Tags
+	articleId := updateArticle.ArticleId
+	aid, _ := strconv.Atoi(articleId)
+	//判空
+	if len(userId) == 0 || len(title) == 0 || len(content) == 0 || len(tags) == 0 || len(columnId) == 0 || len(articleId) == 0 {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//如果是管理员则无需检查
+	if !sql.UserIsAdmin(userId) {
+		//查看用户是否有该文章
+		if !sql.UserHasArticle(aid, uid) {
+			Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_DATAISNOTEXISTS)
+			Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+			return
+		}
+	}
+	//查看专栏是否存在
+	if !sql.IsExistColumnBySid(columnId) {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, "专栏不存在")
+		Resp(ctx, RESP_CODE_DATAISEXISTS, "专栏不存在", nil)
+		return
+	}
+	//查看标签是否存在
+	for _, tag := range tags {
+		if !sql.IsexistTagById(tag) {
+			Log.Error(LOG_ARTICLE_EDIT_ERR, "标签不存在")
+			Resp(ctx, RESP_CODE_DATAISEXISTS, "标签不存在", nil)
+			return
+		}
+	}
+	//获取该文章信息
+	article, err := sql.GetArticleByAid(aid)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, DB_SELECT_ERR, err)
+		Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+		return
+	}
+	//给新的文章赋值
+	newArticle := database.Article{
+		Id:          article.Id,
+		UserId:      article.UserId,
+		Title:       title,
+		ContentUrl:  article.ContentUrl,
+		ContentPath: article.ContentPath,
+		CreateTime:  article.CreateTime,
+		UpdateTime:  time.Now().Format("2006-01-02 15:04:05"),
+		Images:      article.Images,
+		Status:      0,
+		ColumnId:    cid,
+	}
+	art, err := sql.ArticleUpdate(newArticle, tags, aid)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, DB_CREATE_ERR, err)
+		Resp(ctx, RESP_CODE_CERATE_ERR, DB_CREATE_ERR, nil)
+		return
+	}
+	contentFile, err := os.Open(article.ContentPath)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, RESP_INFO_READFILE_ERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_READFILE_ERR, nil)
+	}
+	_, err = contentFile.WriteString(content)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_EDIT_ERR, "无法创建文件, 无法保存数据内容", err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_CREATE_ERR, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_EDIT_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, art)
 }
 
 //提交文章
@@ -310,7 +466,7 @@ func PutArticleRelease(ctx *gin.Context) {
 }
 
 //获取未提交的文章
-func GetWillBeSubmit(ctx *gin.Context) {
+func GetWillBeSubmitArticleList(ctx *gin.Context) {
 	var user struct {
 		UserId string `json:"user_id"`
 	}

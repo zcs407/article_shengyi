@@ -36,11 +36,13 @@ func InitRouter() *gin.Engine {
 		r3.PUT("/articleSubmit", controller.PutArticleSubmit)
 		r3.PUT("/articleRelease", controller.PutArticleRelease)
 		r3.DELETE("/articleDelete", controller.DeleteArticleDel)
+		r3.GET("/articleForEdit", controller.GetArticleForEdit)
 		r3.GET("/articleListByColumn", controller.GetArticleListByColumn)
 		r3.GET("/articleListByTag", controller.GetArticleListByTag)
-		r3.GET("/getFailedArticleList", controller.GetFailedArticleList)
-		r3.GET("/getWillBeReleaseArticleList", controller.GetWillBeReleaseArticleList)
-		r3.GET("/getReleasedArticleList", controller.GetReleasedArticleList)
+		r3.GET("/articleFailedList", controller.GetFailedArticleList)
+		r3.GET("/willBeReleaseArticleList", controller.GetWillBeReleaseArticleList)
+		r3.GET("/releasedArticleList", controller.GetReleasedArticleList)
+		r3.GET("/willBeSubmitArticleList", controller.GetWillBeSubmitArticleList)
 	}
 	r4 := router.Group("/column")
 	{

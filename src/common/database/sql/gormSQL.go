@@ -165,20 +165,17 @@ func ArticleAdd(article database.Article, tags []string) (database.Article, erro
 	return article, nil
 }
 
-//查询文章列表
-
 //查询某个标签的文章集合
 //SELECT article.* FROM article INNER JOIN article_tag
 // ON  article_tag.article_id = article.id WHERE  article_tag.tag_id IN (2);
 func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
 	db := database.DBSQL
-
 	tid, _ := strconv.Atoi(tagid)
 	var articles []*database.Article
 	var images []database.Image
 	tag := database.Tag{}
 	tag.Id = tid
-	err := db.Raw(`SELECT article.* FROM article INNER JOIN article_tag ON article_tag.article_id = article.id WHERE  article_tag.tag_id IN (?);`, tid).Scan(&articles).Error
+	err := db.Raw(`SELECT article.* FROM article INNER JOIN article_tag ON article_tag.article_id = article.id WHERE  article_tag.tag_id IN (?) AND status = ?;`, tid, 2).Scan(&articles).Error
 	if err != nil {
 		return nil, err
 	}
@@ -193,29 +190,60 @@ func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
 }
 
 //查询某专题的文章
-func GetArticlesByColumnID(cid int) ([]database.Article, error) {
+func GetArticlesByColumnID(cid int) ([]*database.Article, error) {
 	db := database.DBSQL
-	var articles []database.Article
-	//err := db.Where("id = ?", cid).First(&columns).Error
-	//if err != nil {
-	//	fmt.Println("查不到")
-	//}
-
-	err := db.Where("column_id = ?", cid).Find(&articles).Error
+	var articles []*database.Article
+	var images []database.Image
+	err := db.Where("column_id = ? AND status = ?", cid, 2).Find(&articles).Error
 	if err != nil {
 		return articles, err
+	}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
-//编辑更新文章
-func ArticleUpdate(article database.Article) error {
+//根据aid获取文章信息
+func GetArticleByAid(aid int) (database.Article, error) {
 	db := database.DBSQL
-
-	if err := db.Update(&article).Error; err != nil {
-		return err
+	var article database.Article
+	var images []database.Image
+	err := db.First(&article, aid).Error
+	if err != nil {
+		return article, err
 	}
-	return nil
+	//给文章的图片路径赋值
+	err = db.Where("article_id = ?", article.Id).Find(&images).Error
+	if err != nil {
+		return article, nil
+	}
+	article.Images = append(article.Images, images...)
+	return article, nil
+}
+
+//编辑更新文章
+func ArticleUpdate(newArticle database.Article, tags []string, aid int) (database.Article, error) {
+	db := database.DBSQL
+	article := database.Article{}
+	for _, tag := range tags {
+		tid, _ := strconv.Atoi(tag)
+		var tag database.Tag
+		if err := db.Where("id = ?", tid).Find(&tag).Error; err != nil {
+			return article, err
+		}
+		article.Tags = append(article.Tags, &tag)
+	}
+	err := db.Save(&newArticle).Error
+	if err != nil {
+		return article, err
+	}
+	return newArticle, nil
 }
 
 //删除文章
@@ -278,73 +306,145 @@ func ArticleRelease(aid, uid int) error {
 }
 
 //获取未提交的所有文章
-func ArticleWillBeSubmit() (articles []database.Article, err error) {
+func ArticleWillBeSubmit() (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ?", 0).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询用户未提交的文章
-func ArticleWillBeSubmitByUid(uid int) (articles []database.Article, err error) {
+func ArticleWillBeSubmitByUid(uid int) (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ? AND user_id = ?", 0, uid).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询所有已提交的文章
-func ArticleSubmited() (articles []database.Article, err error) {
+func ArticleSubmited() (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ?", 1).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询用户所提交的文章
-func ArticleSubmitedByUid(uid int) (articles []database.Article, err error) {
+func ArticleSubmitedByUid(uid int) (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ? AND user_id = ?", 1, uid).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询所有已发布的文章
-func ArticleReleased() (articles []database.Article, err error) {
+func ArticleReleased() (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ?", 2).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询用户发布的文章
-func ArticleReleasedByUid(uid int) (articles []database.Article, err error) {
+func ArticleReleasedByUid(uid int) (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ? AND user_id = ?", 2, uid).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //获取发布失败的文章
-func ArticleReleaseFailed() (articles []database.Article, err error) {
+func ArticleReleaseFailed() (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ?", 3).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
 
 //查询用户发布的文章
-func ArticleReleaseFailedByUid(uid int) (articles []database.Article, err error) {
+func ArticleReleaseFailedByUid(uid int) (articles []*database.Article, err error) {
 	db := database.DBSQL
 	if err := db.Where("status = ? AND user_id = ?", 3, uid).Find(articles).Error; err != nil {
 		return articles, err
+	}
+	images := []database.Image{}
+	//给每个文章的图片路径赋值
+	for _, article := range articles {
+		err := db.Where("article_id = ?", article.Id).Find(&images).Error
+		if err != nil {
+			continue
+		}
+		article.Images = append(article.Images, images...)
 	}
 	return articles, nil
 }
@@ -352,7 +452,6 @@ func ArticleReleaseFailedByUid(uid int) (articles []database.Article, err error)
 ///////////////////////////////////////////////图片管理///////////////////////////////////////////
 func ArticleImageAdd(imgurl, imgPath, aid string) error {
 	db := database.DBSQL
-
 	image := database.Image{}
 	image.ImageUrl = imgurl
 	image.ImagePath = imgPath
@@ -387,6 +486,15 @@ func ColumnAdd(name string, Pid int) (database.Columns, error) {
 		return column, err
 	}
 	return column, nil
+}
+
+//查询所有专栏
+func GetColumnList() (cloumns []database.Columns, err error) {
+	db := database.DBSQL
+	if err := db.Find(&cloumns).Error; err != nil {
+		return cloumns, err
+	}
+	return cloumns, nil
 }
 
 //按pid查询专题列表
@@ -546,4 +654,11 @@ func TagCnameById(tid, tname string) (string, error) {
 	}
 	newname := tag.TagName
 	return newname, nil
+}
+func GetTagList() (tags []database.Tag, err error) {
+	db := database.DBSQL
+	if err := db.Find(&tags).Error; err != nil {
+		return tags, err
+	}
+	return tags, nil
 }

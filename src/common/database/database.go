@@ -36,14 +36,5 @@ func InitDB(mysql common.Database) {
 	db.DB().SetConnMaxLifetime(time.Hour)
 	db.SingularTable(true)
 	db.AutoMigrate(&User{}, &Article{}, &Image{}, &Columns{}, &Tag{})
-	//go func() {
-	//	timer := time.NewTicker(5 * time.Second)
-	//	for {
-	//		if _, ok := <-timer.C; !ok {
-	//			continue
-	//		}
-	//		Log.Warn("当前打开数据库连接数为: %d", db.DB().Stats().OpenConnections)
-	//	}
-	//}()
 	DBSQL = db
 }
