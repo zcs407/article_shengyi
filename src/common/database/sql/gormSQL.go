@@ -2,7 +2,6 @@ package sql
 
 import (
 	"articlebk/src/common/database"
-	"fmt"
 	"strconv"
 )
 
@@ -48,7 +47,7 @@ func UserIsAdmin(uid string) bool {
 	db := database.DBSQL
 	user := database.User{}
 	id, _ := strconv.Atoi(uid)
-	if err := db.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := db.Where("id = ? AND roller_id = ?", id, 0).First(&user).Error; err != nil {
 		return false
 	}
 	return true
@@ -194,21 +193,19 @@ func GetArticlesByTagId(tagid string) ([]*database.Article, error) {
 }
 
 //查询某专题的文章
-
-func ArticleSelectByColumn(sid string) {
+func GetArticlesByColumnID(cid int) ([]database.Article, error) {
 	db := database.DBSQL
+	var articles []database.Article
+	//err := db.Where("id = ?", cid).First(&columns).Error
+	//if err != nil {
+	//	fmt.Println("查不到")
+	//}
 
-	var columns []database.Columns
-	article := database.Article{}
-	err := db.Find(&article, sid).Error
+	err := db.Where("column_id = ?", cid).Find(&articles).Error
 	if err != nil {
-		fmt.Println("查不到")
+		return articles, err
 	}
-	err = db.Model(&article).Related(&columns, "Columns").Error
-	if err != nil {
-		return
-	}
-	return
+	return articles, nil
 }
 
 //编辑更新文章
@@ -252,7 +249,7 @@ func IsexistArticle(title string) bool {
 func UserHasArticle(aid, uid int) bool {
 	db := database.DBSQL
 	article := database.Article{}
-	if err := db.Where("user_id = ? AND id = ?", uid, aid).First(&article).Error; err != nil {
+	if err := db.Where("id = ? AND user_id = ?", aid, uid).First(&article).Error; err != nil {
 		return false
 	}
 	return true
@@ -267,6 +264,89 @@ func ArticleSubmit(aid, uid int) error {
 		return err
 	}
 	return nil
+}
+
+//发布文章
+func ArticleRelease(aid, uid int) error {
+	db := database.DBSQL
+	article := database.Article{}
+	err := db.Model(&article).Where("user_id = ? AND id = ?", uid, aid).Update("status", 2).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//获取未提交的所有文章
+func ArticleWillBeSubmit() (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ?", 0).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询用户未提交的文章
+func ArticleWillBeSubmitByUid(uid int) (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ? AND user_id = ?", 0, uid).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询所有已提交的文章
+func ArticleSubmited() (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ?", 1).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询用户所提交的文章
+func ArticleSubmitedByUid(uid int) (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ? AND user_id = ?", 1, uid).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询所有已发布的文章
+func ArticleReleased() (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ?", 2).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询用户发布的文章
+func ArticleReleasedByUid(uid int) (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ? AND user_id = ?", 2, uid).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//获取发布失败的文章
+func ArticleReleaseFailed() (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ?", 3).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
+}
+
+//查询用户发布的文章
+func ArticleReleaseFailedByUid(uid int) (articles []database.Article, err error) {
+	db := database.DBSQL
+	if err := db.Where("status = ? AND user_id = ?", 3, uid).Find(articles).Error; err != nil {
+		return articles, err
+	}
+	return articles, nil
 }
 
 ///////////////////////////////////////////////图片管理///////////////////////////////////////////
@@ -467,7 +547,3 @@ func TagCnameById(tid, tname string) (string, error) {
 	newname := tag.TagName
 	return newname, nil
 }
-
-//根据标签查文章
-//SELECT article.* FROM article INNER JOIN article_tag
-// ON  article_tag.article_id = article.id WHERE  article_tag.tag_id IN (2);

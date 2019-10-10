@@ -22,11 +22,11 @@ type Article struct {
 	ContentUrl  string `gorm:"size:255"`        //文章链接
 	ContentPath string `gorm:"size:255"`        //文章本地路径
 	CreateTime  string
-	UpdateTime  string
+	UpdateTime  string  `gorm:"TYPE:DATETIME"`
 	Images      []Image //链接地址
-	Status      int     `gorm:"size:11"` //审批状态,0编辑中,1审批中,2审批通过,3审批失败
+	Status      int     `gorm:"size:11"` //审批状态,0编辑中,1已提交,2已发布,3审批失败
 	Tags        []*Tag  `gorm:"many2many:article_tag;"`
-	ColumnId    int
+	ColumnId    int     `gorm:"TYPE:int(11);NOT NULL;INDEX"`
 }
 type Image struct {
 	Id        int `gorm:"AUTO_INCREMENT"`
@@ -44,7 +44,7 @@ type Tag struct {
 type Columns struct {
 	Id         int
 	ColumnName string
-	Pid        int //上级专题的id
-	Articles   []*Article
+	Pid        int       //上级专题的id
+	Articles   []Article `gorm:"FOREIGNKEY:column_id;ASSOCIATION_FOREIGNKEY:id"`
 	Columns    []Columns `gorm:"-"`
 }

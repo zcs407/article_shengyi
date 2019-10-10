@@ -11,7 +11,7 @@ import (
 
 func PostColumnAdd(ctx *gin.Context) {
 	var column struct {
-		Name     string `json:"name"`
+		Name     string `json:"column_name"`
 		ParentId string `json:"parent_id"`
 	}
 
@@ -38,11 +38,11 @@ func PostColumnAdd(ctx *gin.Context) {
 		return
 	}
 	//如果pid非0且不存在,则无法添加
-	//if columnParentId != "0" && !sql.IsExistColumnBySid(columnParentId) {
-	//	Log.Error(LOG_COLUMN_ADD_ERR, RESP_INFO_DATAISEXISTS)
-	//	Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISEXISTS, nil)
-	//	return
-	//}
+	if columnParentId != "0" && !sql.IsExistColumnBySid(columnParentId) {
+		Log.Error(LOG_COLUMN_ADD_ERR, RESP_INFO_DATAISEXISTS)
+		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISEXISTS, nil)
+		return
+	}
 
 	col, err := sql.ColumnAdd(colName, columnPid)
 	if err != nil {

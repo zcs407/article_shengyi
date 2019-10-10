@@ -12,63 +12,7 @@ import (
 	"time"
 )
 
-func GetArticleListByTag(ctx *gin.Context) {
-
-	var tag struct {
-		TagId string `json:"tag_id"`
-	}
-	err := ctx.BindJSON(&tag)
-	if err != nil {
-		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_GETJSONERR, err)
-		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
-		return
-	}
-	//获取tagid
-	tagId := tag.TagId
-	//判空
-	if tagId == "" {
-		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_JSON_DATANULL)
-		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
-		return
-	}
-	//是否存在此标签
-	if !sql.IsexistTagById(tagId) {
-		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_DATAISNOTEXISTS)
-		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
-		return
-	}
-	//数据库查询
-	articles, err := sql.GetArticlesByTagId(tagId)
-	if err != nil {
-		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_DATAISNOTEXISTS, err)
-		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
-		return
-	}
-	Log.Info(LOG_ARTICLE_LISTBYTAG_SUCCESS, RESP_INFO_OK)
-	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
-}
-func GetArticleListByColumn(ctx *gin.Context) {
-	//sid := ctx.Query("sid")
-	//database.ArticleSelectByColumn(sid)
-	//TODO
-}
-func GetFailedArticleList(ctx *gin.Context) {
-	//TODO
-}
-func GetReleasedArticleList(ctx *gin.Context) {
-	//TODO
-}
-func GetWillBeReleaseArticleList(ctx *gin.Context) {
-	//TODO
-}
-func PatchArticleEdit(ctx *gin.Context) {
-	err := ctx.BindJSON("")
-	if err != nil {
-
-	}
-	//TODO
-}
-
+//新增文章
 func PostArticleAdd(ctx *gin.Context) {
 	var article struct {
 		Uid      string   `json:"uid"`
@@ -158,6 +102,7 @@ func PostArticleAdd(ctx *gin.Context) {
 	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, art)
 }
 
+//删除文章
 func DeleteArticleDel(ctx *gin.Context) {
 	var delArticle struct {
 		ArticleId string `json:"article_id"`
@@ -203,31 +148,37 @@ func DeleteArticleDel(ctx *gin.Context) {
 	}
 	_ = os.Remove(contentUrl)
 	Log.Info(LOG_ARTICLE_DEL_SUCCESS, RESP_INFO_OK)
-	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articleId)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
 }
 
-func PutArticleRelease(ctx *gin.Context) {
+//文章编辑
+func PatchArticleEdit(ctx *gin.Context) {
+	err := ctx.BindJSON("")
+	if err != nil {
+
+	}
 	//TODO
 }
 
+//提交文章
 func PutArticleSubmit(ctx *gin.Context) {
 	var articleSubmit struct {
-		Aid string `json:"aid"`
-		Uid string `json:"uid"`
+		ArticleId string `json:"article_id"`
+		UserId    string `json:"user_id"`
 	}
 	//获取json中的uid和aid
-	err := ctx.BindJSON(articleSubmit)
+	err := ctx.BindJSON(&articleSubmit)
 	if err != nil {
 		Log.Error(LOG_ARTICLE_SUBMIT_ERR, RESP_INFO_GETJSONERR, err)
 		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
 		return
 	}
 	//判断uid与aid是否为空
-	userId := articleSubmit.Uid
+	userId := articleSubmit.UserId
 	uid, _ := strconv.Atoi(userId)
-	articleId := articleSubmit.Aid
+	articleId := articleSubmit.ArticleId
 	aid, _ := strconv.Atoi(articleId)
-	if userId == "" || articleId == "" {
+	if len(userId) == 0 || len(articleId) == 0 {
 		Log.Error(LOG_ARTICLE_SUBMIT_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -245,4 +196,291 @@ func PutArticleSubmit(ctx *gin.Context) {
 	}
 	Log.Info(LOG_ARTICLE_SUBMIT_SUCCESS, RESP_INFO_OK)
 	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
+}
+
+//按标签获取文章
+func GetArticleListByTag(ctx *gin.Context) {
+	var tag struct {
+		TagId string `json:"tag_id"`
+	}
+	err := ctx.BindJSON(&tag)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	tagId := tag.TagId
+	//判空
+	if tagId == "" {
+		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否存在此标签
+	if !sql.IsexistTagById(tagId) {
+		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_DATAISNOTEXISTS)
+		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	//数据库查询
+	articles, err := sql.GetArticlesByTagId(tagId)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_LIST_BYTAG_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_LISTBYTAG_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+}
+
+//按专栏获取文章
+func GetArticleListByColumn(ctx *gin.Context) {
+	var byColumn struct {
+		ColumnId string `json:"column_id"`
+	}
+	err := ctx.BindJSON(&byColumn)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_LIST_BYCOLUMN_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	columnId := byColumn.ColumnId
+	//判空
+	if columnId == "" {
+		Log.Error(LOG_ARTICLE_LIST_BYCOLUMN_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否存在此标签
+	if !sql.IsexistTagById(columnId) {
+		Log.Error(LOG_ARTICLE_LIST_BYCOLUMN_ERR, RESP_INFO_DATAISNOTEXISTS)
+		Resp(ctx, RESP_CODE_DATAISEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	//数据库查询
+	cid, _ := strconv.Atoi(columnId)
+	columns, err := sql.GetArticlesByColumnID(cid)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_LIST_BYCOLUMN_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_LIST_BYCOLUMN_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, columns)
+}
+
+//发布文章
+func PutArticleRelease(ctx *gin.Context) {
+	var articleRelease struct {
+		ArticleId string `json:"article_id"`
+		UserId    string `json:"user_id"`
+	}
+	//获取json中的uid和aid
+	err := ctx.BindJSON(&articleRelease)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_RELEASE_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//判断uid与aid是否为空
+	userId := articleRelease.UserId
+	uid, _ := strconv.Atoi(userId)
+	articleId := articleRelease.ArticleId
+	aid, _ := strconv.Atoi(articleId)
+	if len(userId) == 0 || len(articleId) == 0 {
+		Log.Error(LOG_ARTICLE_RELEASE_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//判断是否为管理员
+	if !sql.UserIsAdmin(userId) {
+		Log.Error(LOG_ARTICLE_RELEASE_ERR, RESP_INFO_NOPERMISSION)
+		Resp(ctx, RESP_CODE_NOPERMISSION, RESP_INFO_NOPERMISSION, nil)
+		return
+	}
+	if err := sql.ArticleRelease(aid, uid); err != nil {
+		Log.Error(LOG_ARTICLE_RELEASE_ERR, DB_ARTICLE_SUBMIT_ERR, err)
+		Resp(ctx, RESP_CODE_SUBMIT_ERR, DB_ARTICLE_SUBMIT_ERR, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_RELEASE_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
+}
+
+//获取未提交的文章
+func GetWillBeSubmit(ctx *gin.Context) {
+	var user struct {
+		UserId string `json:"user_id"`
+	}
+	err := ctx.BindJSON(&user)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETWILLBESUB_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	uid := user.UserId
+	//判空
+	if len(uid) == 0 {
+		Log.Error(LOG_ARTICLE_GETWILLBESUB_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否为管理员
+	if !sql.UserIsAdmin(uid) {
+		//普通用户只会获取自己发布的文章
+		uidInt, _ := strconv.Atoi(uid)
+		articles, err := sql.ArticleWillBeSubmitByUid(uidInt)
+		if err != nil {
+			Log.Error(LOG_ARTICLE_GETWILLBESUB_ERR, DB_SELECT_ERR, err)
+			Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+			return
+		}
+		Log.Info(LOG_ARTICLE_GETWILLBESUB_ERR, RESP_INFO_OK)
+		Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+		return
+	}
+	//管理员查询所有发布的文章
+	articles, err := sql.ArticleWillBeSubmit()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETWILLBESUB_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_GETWILLBESUB_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+}
+
+//获取发布失败的文章
+func GetFailedArticleList(ctx *gin.Context) {
+	var user struct {
+		UserId string `json:"user_id"`
+	}
+	err := ctx.BindJSON(&user)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_RELEASEFAILD_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	uid := user.UserId
+	//判空
+	if len(uid) == 0 {
+		Log.Error(LOG_ARTICLE_RELEASEFAILD_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否为管理员
+	if !sql.UserIsAdmin(uid) {
+		//普通用户只会获取自己发布的文章
+		uidInt, _ := strconv.Atoi(uid)
+		articles, err := sql.ArticleReleaseFailedByUid(uidInt)
+		if err != nil {
+			Log.Error(LOG_ARTICLE_RELEASEFAILD_ERR, DB_SELECT_ERR, err)
+			Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+			return
+		}
+		Log.Info(LOG_ARTICLE_RELEASEFAILD_ERR, RESP_INFO_OK)
+		Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+		return
+	}
+	//管理员查询所有发布的文章
+	articles, err := sql.ArticleReleaseFailed()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_RELEASEFAILD_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_RELEASEFAILD_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+}
+
+//获取已发布文章
+func GetReleasedArticleList(ctx *gin.Context) {
+	var user struct {
+		UserId string `json:"user_id"`
+	}
+	err := ctx.BindJSON(&user)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETRELEASELIST_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	uid := user.UserId
+	//判空
+	if len(uid) == 0 {
+		Log.Error(LOG_ARTICLE_GETRELEASELIST_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否为管理员
+	if !sql.UserIsAdmin(uid) {
+		//普通用户只会获取自己发布的文章
+		uidInt, _ := strconv.Atoi(uid)
+		articles, err := sql.ArticleReleasedByUid(uidInt)
+		if err != nil {
+			Log.Error(LOG_ARTICLE_GETRELEASELIST_ERR, DB_SELECT_ERR, err)
+			Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+			return
+		}
+		Log.Info(LOG_ARTICLE_GETRELEASELIST_ERR, RESP_INFO_OK)
+		Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+		return
+	}
+	//管理员查询所有发布的文章
+	articles, err := sql.ArticleReleased()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETRELEASELIST_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_GETRELEASELIST_SUCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+}
+
+//获取将发布的文章(已提交)
+func GetWillBeReleaseArticleList(ctx *gin.Context) {
+	var user struct {
+		UserId string `json:"user_id"`
+	}
+	err := ctx.BindJSON(&user)
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETWILLBERELEASE_ERR, RESP_INFO_GETJSONERR, err)
+		Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, nil)
+		return
+	}
+	//获取tagid
+	uid := user.UserId
+	//判空
+	if len(uid) == 0 {
+		Log.Error(LOG_ARTICLE_GETWILLBERELEASE_ERR, RESP_INFO_JSON_DATANULL)
+		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
+		return
+	}
+	//是否为管理员
+	if !sql.UserIsAdmin(uid) {
+		//普通用户只会获取自己提交的文章
+		uidInt, _ := strconv.Atoi(uid)
+		articles, err := sql.ArticleSubmitedByUid(uidInt)
+		if err != nil {
+			Log.Error(LOG_ARTICLE_GETWILLBERELEASE_SUCCESS, DB_SELECT_ERR, err)
+			Resp(ctx, RESP_CODE_SELECT, DB_SELECT_ERR, nil)
+			return
+		}
+		Log.Info(LOG_ARTICLE_GETWILLBERELEASE_SUCCESS, RESP_INFO_OK)
+		Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
+		return
+	}
+	//管理员获取所有已提交的文章,用来审批
+	articles, err := sql.ArticleSubmited()
+	if err != nil {
+		Log.Error(LOG_ARTICLE_GETWILLBERELEASE_ERR, RESP_INFO_DATAISNOTEXISTS, err)
+		Resp(ctx, RESP_CODE_DATAISNOTEXISTS, RESP_INFO_DATAISNOTEXISTS, nil)
+		return
+	}
+	Log.Info(LOG_ARTICLE_GETWILLBERELEASE_SUCCESS, RESP_INFO_OK)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, articles)
 }

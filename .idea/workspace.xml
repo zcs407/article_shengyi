@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/conf/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/conf/config.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/database/tableInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/tableInfo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/errornu.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/errornu.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/articleOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/articleOperation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/columnOPeration.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/columnOPeration.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
