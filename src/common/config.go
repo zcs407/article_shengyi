@@ -25,7 +25,9 @@ type ApiServer struct {
 	Address string
 }
 type FileServer struct {
-	Address string
+	Address   string
+	TextPath  string `toml:"text_path"`
+	ImagePath string `toml:"image_path"`
 }
 type token struct {
 }

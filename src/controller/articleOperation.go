@@ -93,7 +93,7 @@ func PostArticleAdd(ctx *gin.Context) {
 	sid, _ := strconv.Atoi(columnId)
 	tags := article.Tags
 	//创建本地文件用于保存文章
-	contentFile, err := ioutil.TempFile("/Users/ander/go/src/articlebk/articleData/articleFile/", "article-*.txt")
+	contentFile, err := ioutil.TempFile(Settings.FileServer.TextPath, "article-*.txt")
 	if err != nil {
 		Log.Error(LOG_ARTICLE_ADD_ERR, "创建文章文件出错!!", err)
 		Resp(ctx, RESP_CODE_CERATE_ERR, "创建文章文件出错!!", nil)

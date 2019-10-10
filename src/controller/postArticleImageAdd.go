@@ -34,13 +34,18 @@ func PostArticleImageAdd(ctx *gin.Context) {
 		//判断图片类型是否为jpg,png或jpeg格式
 		ext := path.Ext(image.Filename)
 		if ext != ".jpg" && ext != ".png" && ext != ".jpeg" {
-			Log.Error(RESP_INFO_GETJSONERR, LOG_IAMGE_EXT_ERR)
+			Log.Error(LOG_IMAGE_ADD_ERR, LOG_IAMGE_EXT_ERR)
 			Resp(ctx, RESP_CODE_GETJSONERR, RESP_INFO_GETJSONERR, LOG_IAMGE_EXT_ERR)
 			return
 		}
-		imageFile, err := ioutil.TempFile("./articleData/images/", "article-img-*"+ext)
+		imageFile, err := ioutil.TempFile(Settings.FileServer.ImagePath, "article-img-*"+ext)
+		if err != nil {
+			Log.Error(LOG_IMAGE_ADD_ERR, "图片无法保存", err)
+			Resp(ctx, RESP_CODE_CERATE_ERR, RESP_CODE_CERATE_ERR, nil)
+			return
+		}
 		//定义外网访问的URL
-		imagePath := "./" + imageFile.Name()
+		imagePath := imageFile.Name()
 		imgSplit := strings.Split(imageFile.Name(), "/")
 		imgName := string(imgSplit[len(imgSplit)-1])
 		imageUrl := "http://127.0.0.1:8888/images/" + imgName
@@ -60,5 +65,5 @@ func PostArticleImageAdd(ctx *gin.Context) {
 		imageUrls = append(imageUrls, imageUrl)
 	}
 	Log.Info(LOG_IMAGE_ADD_SUCCESS, RESP_INFO_OK)
-	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, nil)
+	Resp(ctx, RESP_CODE_OK, RESP_INFO_OK, imageUrls)
 }

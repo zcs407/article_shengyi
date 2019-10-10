@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/fileServer.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/sql/gormSQL.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/database/tableInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/database/tableInfo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/errornu.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/errornu.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/conf/config.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/controller/articleOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/articleOperation.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/columnOPeration.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/columnOPeration.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fileserver/fileServer.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -39,7 +34,7 @@
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="add_unversioned_files" value="$PROJECT_DIR$/log/app.log&#10;/Users/ander/go/src/articlebk/log/article.log" />
+    <property name="add_unversioned_files" value="$PROJECT_DIR$/articleData/articleFile/article-858897882.txt&#10;/Users/ander/go/src/articlebk/log/app.log&#10;/Users/ander/go/src/articlebk/log/article.log" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />

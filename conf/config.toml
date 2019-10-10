@@ -11,6 +11,8 @@ max_idle_conns = 10
 max_open_conns = 20
 [file_server]
 address = "0.0.0.0:8800"
+text_path = "/Users/ander/go/src/articlebk/articleData/articleFile/"
+image_path = "/Users/ander/go/src/articlebk/articleData/images/"
 [api_server]
 address = "0.0.0.0:8080"
 
