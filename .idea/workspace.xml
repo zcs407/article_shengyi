@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="">
+    <list default="true" id="5786180a-d876-4938-8bf7-eab9c7e241b5" name="Default Changelist" comment="string to len(string)">
+      <change afterPath="$PROJECT_DIR$/index-1.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/errornu.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/errornu.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controller/articleOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/articleOperation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/columnOPeration.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/columnOPeration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/postArticleImageAdd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/tagOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/tagOperation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/controller/userOperation.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/controller/userOperation.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,7 +22,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" path="/usr/local/go" />
+  <component name="GOROOT" path="C:\Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -30,6 +33,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="GO_FMT" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="add_unversioned_files" value="$PROJECT_DIR$/articleData/articleFile/article-858897882.txt&#10;/Users/ander/go/src/articlebk/articleData/articleFile/article-204799539.txt&#10;/Users/ander/go/src/articlebk/log/app.log&#10;/Users/ander/go/src/articlebk/log/article.log" />
@@ -111,5 +115,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="string to len(string)" />
+    <option name="LAST_COMMIT_MESSAGE" value="string to len(string)" />
   </component>
 </project>

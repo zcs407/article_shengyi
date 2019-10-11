@@ -31,7 +31,7 @@ func PostRegister(ctx *gin.Context) {
 	roller := userInfo.RollerId
 	rollerId, _ := strconv.Atoi(roller)
 	//判断post的数据是否为空
-	if userName == "" || userPwd == "" || roller == "" {
+	if len(userName) == 0 || len(userPwd) == 0 || len(roller) == 0 {
 		Log.Error(LOG_USER_REGISTER_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -78,7 +78,7 @@ func DeleteUser(ctx *gin.Context) {
 	//获取用户信息
 	uid := userInfo.UserId
 	//判空
-	if uid == "" {
+	if len(uid) == 0 {
 		Log.Error(LOG_USER_DELETE_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -116,7 +116,7 @@ func PostLogin(ctx *gin.Context) {
 	username := userinfo.UserName
 	userPwd := userinfo.Password
 	//判断用户名密码是否为空
-	if username == "" || userPwd == "" {
+	if len(username) == 0 || len(userPwd) == 0 {
 		Log.Error(LOG_USER_LOGIN_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -167,7 +167,7 @@ func GetUserList(ctx *gin.Context) {
 	uid := userInfo.UserId
 	rid := userInfo.RollerId
 	//判空
-	if uid == "" || rid == "" {
+	if len(uid) == 0 || len(rid) == 0 {
 		Log.Error(LOG_USER_LIST_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -216,7 +216,7 @@ func PutUserRollerUpdate(ctx *gin.Context) {
 	newrollerid := userInfo.NewrollerId
 	rollernum, _ := strconv.Atoi(newrollerid)
 	//判空
-	if newrollerid == "" || username == "" || userid == "" || oldrollerid == "" || rollernum > 1 || rollernum < 0 {
+	if len(newrollerid) == 0 || len(username) == 0 || len(userid) == 0 || len(oldrollerid) == 0 || rollernum > 1 || rollernum < 0 {
 		Log.Error(LOG_USER_UPDATE_ROLLER_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -255,7 +255,7 @@ func PutUserPwdUpdate(ctx *gin.Context) {
 	uid := userInfo.UserId
 	opwd := userInfo.OldPassword
 	npwd := userInfo.NewPassword
-	if uid == "" || opwd == "" || npwd == "" {
+	if len(uid) == 0 || len(opwd) == 0 || len(npwd) == 0 {
 		Log.Error(LOG_USER_UPDATE_PWD_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return

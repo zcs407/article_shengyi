@@ -19,7 +19,7 @@ func PostTagAdd(ctx *gin.Context) {
 	}
 	//判空
 	tagname := tag.TagName
-	if tagname == "" {
+	if len(tagname) == 0 {
 		Log.Error(LOG_TAG_ADD_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -55,7 +55,7 @@ func PostTagDel(ctx *gin.Context) {
 	}
 	//判空
 	tagId := tag.TagId
-	if tagId == "" {
+	if len(tagId) == 0 {
 		Log.Error(LOG_TAG_DELETE_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -93,7 +93,7 @@ func PostTagCname(ctx *gin.Context) {
 	//判空
 	tagId := tag.TagId
 	tagNewName := tag.NewName
-	if tagId == "" || tagNewName == "" {
+	if len(tagId) == 0 || len(tagNewName) == 0 {
 		Log.Error(LOG_TAG_CNAME_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return

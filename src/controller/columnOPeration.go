@@ -28,7 +28,7 @@ func PostColumnAdd(ctx *gin.Context) {
 		return
 	}
 	//如果没有父级id,则属于一级菜单,默认父级id是0
-	if columnParentId == "" {
+	if len(columnParentId) == 0 {
 		columnParentId = "0"
 	}
 	columnPid, _ := strconv.Atoi(columnParentId)
@@ -67,7 +67,7 @@ func DeleteColumn(ctx *gin.Context) {
 	}
 	//获取专题信息判空
 	sid := columnInfo.ColumnId
-	if sid == "" {
+	if len(sid) == 0 {
 		Log.Error(LOG_COLUMN_DELETE_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return
@@ -137,7 +137,7 @@ func PutColumnCname(ctx *gin.Context) {
 	//获取专题信息判空
 	sid := columnInfo.ColumId
 	newName := columnInfo.ColumnNewName
-	if sid == "" || newName == "" {
+	if len(sid) == 0 || len(newName) == 0 {
 		Log.Error(LOG_COLUMN_CNAME_ERR, RESP_INFO_JSON_DATANULL)
 		Resp(ctx, RESP_CODE_JSON_DATANULL, RESP_INFO_JSON_DATANULL, nil)
 		return

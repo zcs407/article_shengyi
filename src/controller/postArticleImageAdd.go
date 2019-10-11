@@ -47,7 +47,7 @@ func PostArticleImageAdd(ctx *gin.Context) {
 		//定义外网访问的URL
 		imagePath := imageFile.Name()
 		imgSplit := strings.Split(imageFile.Name(), "/")
-		imgName := string(imgSplit[len(imgSplit)-1])
+		imgName := imgSplit[len(imgSplit)-1]
 		imageUrl := "http://127.0.0.1:8888/images/" + imgName
 		//插入数据库,如果失败则不保存文件
 		err = sql.ArticleImageAdd(imageUrl, imagePath, aid)
