@@ -1,0 +1,34 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /login                    --> articlebk/src/controller.PostLogin (5 handlers)
+[GIN-debug] POST   /register                 --> articlebk/src/controller.PostRegister (5 handlers)
+[GIN-debug] DELETE /user/userDelete          --> articlebk/src/controller.DeleteUser (5 handlers)
+[GIN-debug] PUT    /user/userUpdate/userPwdUpdate --> articlebk/src/controller.PutUserPwdUpdate (5 handlers)
+[GIN-debug] PUT    /user/userUpdate/userRollerUpdate --> articlebk/src/controller.PutUserRollerUpdate (5 handlers)
+[GIN-debug] GET    /user/userList            --> articlebk/src/controller.GetUserList (5 handlers)
+[GIN-debug] POST   /article/articleImageAdd  --> articlebk/src/controller.PostArticleImageAdd (5 handlers)
+[GIN-debug] POST   /article/articleAdd       --> articlebk/src/controller.PostArticleAdd (5 handlers)
+[GIN-debug] PATCH  /article/articleEdit      --> articlebk/src/controller.PatchArticleEdit (5 handlers)
+[GIN-debug] PUT    /article/articleSubmit    --> articlebk/src/controller.PutArticleSubmit (5 handlers)
+[GIN-debug] PUT    /article/articleRelease   --> articlebk/src/controller.PutArticleRelease (5 handlers)
+[GIN-debug] DELETE /article/articleDelete    --> articlebk/src/controller.DeleteArticleDel (5 handlers)
+[GIN-debug] GET    /article/articleForEdit   --> articlebk/src/controller.GetArticleForEdit (5 handlers)
+[GIN-debug] GET    /article/articleListByColumn --> articlebk/src/controller.GetArticleListByColumn (5 handlers)
+[GIN-debug] GET    /article/articleListByTag --> articlebk/src/controller.GetArticleListByTag (5 handlers)
+[GIN-debug] GET    /article/articleFailedList --> articlebk/src/controller.GetFailedArticleList (5 handlers)
+[GIN-debug] GET    /article/willBeReleaseArticleList --> articlebk/src/controller.GetWillBeReleaseArticleList (5 handlers)
+[GIN-debug] GET    /article/releasedArticleList --> articlebk/src/controller.GetReleasedArticleList (5 handlers)
+[GIN-debug] GET    /article/willBeSubmitArticleList --> articlebk/src/controller.GetWillBeSubmitArticleList (5 handlers)
+[GIN-debug] POST   /column/columnAdd         --> articlebk/src/controller.PostColumnAdd (5 handlers)
+[GIN-debug] PUT    /column/columnCname       --> articlebk/src/controller.PutColumnCname (5 handlers)
+[GIN-debug] DELETE /column/columnDel         --> articlebk/src/controller.DeleteColumn (5 handlers)
+[GIN-debug] GET    /column/columnList        --> articlebk/src/controller.GetColumnList (5 handlers)
+[GIN-debug] POST   /tag/tagAdd               --> articlebk/src/controller.PostTagAdd (5 handlers)
+[GIN-debug] POST   /tag/tagDel               --> articlebk/src/controller.PostTagDel (5 handlers)
+[GIN-debug] POST   /tag/TagCname             --> articlebk/src/controller.PostTagCname (5 handlers)
+[GIN-debug] Listening and serving HTTP on 0.0.0.0:8080
+:47","level":"info","method":"main.main","msg":"访问地址:http://0.0.0.0:8080","time":"2019-10-16T09:14:44+08:00"}

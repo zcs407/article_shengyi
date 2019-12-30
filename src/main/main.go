@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	confPath = "/Users/ander/go/src/articlebk/conf/config.toml"
+	confPath = "conf/config.toml"
 )
 
 func main() {
